@@ -1,0 +1,211 @@
+/* Genel Stil Ayarları */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f9f9f9;
+    color: #333;
+    margin: 0;
+    padding: 0;
+    text-align: center;
+}
+
+/* Başlık */
+h1 {
+    color: #0e8412;
+    margin: 20px 0;
+}
+
+/* Sekme Butonları */
+#tabs {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+    gap: 15px;
+}
+
+#tabs button {
+    padding: 12px 25px;
+    font-size: 16px;
+    font-weight: bold;
+    background-color: #58be81;
+    color: white;
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+#tabs button:hover {
+    background-color: #749f77;
+    transform: scale(1.1);
+}
+
+
+
+/* Tab İçeriği */
+.tab-content {
+    display: none;
+    margin-top: 20px;
+    padding: 20px;
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Aktif Tab */
+.tab-content.active {
+    display: block;
+}
+
+/* Formlar ve Giriş Alanları */
+form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 20px 0;
+}
+
+form input, form textarea {
+    margin: 12px 0;
+    padding: 14px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    width: 90%;
+    max-width: 420px;
+    font-size: 16px;
+    box-sizing: border-box;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Odaklanıldığında border rengini ve gölgeyi değiştir */
+form input:focus, form textarea:focus {
+    border-color: #4CAF50;
+    box-shadow: 0 0 8px rgba(76, 175, 80, 0.2);
+    outline: none;
+}
+
+/* Geriye doğru koyu gölge */
+form input, form textarea {
+    background-color: #f9f9f9;
+}
+
+/* Placeholder text stilleri */
+form input::placeholder, form textarea::placeholder {
+    color: #999;
+    font-style: italic;
+}
+
+form textarea {
+    resize: none;
+}
+
+form button {
+    padding: 12px 25px;
+    font-size: 16px;
+    font-weight: bold;
+    background-color: #4caf9b;
+    color: white;
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+form button:hover {
+    background-color: #8baf8d;
+    transform: scale(1.1);
+}
+
+/* Hatırlatıcılar ve Listeler */
+ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+ul li {
+    background-color: #f1f1f1;
+    border-left: 5px solid #0078D7;
+    padding: 12px;
+    margin: 12px 0;
+    border-radius: 5px;
+    text-align: left;
+    font-size: 16px;
+}
+
+/* Sekme Bölümleri */
+.sports-container, .academic-container, .general-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 30px;
+}
+
+/* Güncellenmiş Tab Başlıkları */
+section h3 {
+    color: #4CAF50;
+    margin-bottom: 10px;
+    font-size: 22px;
+    font-weight: bold;
+}
+
+
+/* Üst Bilgi Alanı */
+#tabs {
+    background-color: #f1f1f1;
+    padding: 20px 0;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Yanıtlar için Duyurular */
+p {
+    font-size: 16px;
+    color: #333;
+}
+
+/* İleri Düzey Sekme İçeriği Düzenlemeleri */
+#sports .section, #academic .section, #general .section {
+    width: 100%;
+    max-width: 600px;
+}
+
+/* AIO Tab */
+#aio .section {
+    background-color: #f9f9f9;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+}
+
+#aio .section h3 {
+    font-size: 24px;
+    color: #0078D7;
+}
+/* AIO Sekmesi */
+#aio .aio-container {
+    margin-top: 20px;
+}
+
+#aio .aio-container li {
+    background-color: #c8e6c9;
+}
+
+/* Sports, Academic, General Sekmeleri */
+.sports-container li, .academic-container li, .general-container li {
+    background-color: #ffecb3;
+}
+
+
+.tab-content {
+    display: none; 
+}
+
+.tab-content.active {
+    display: block;
+}
+
+
+/* Takvim görünümü */
+#calendar {
+    max-width: 900px;
+    margin: 0 auto;
+}

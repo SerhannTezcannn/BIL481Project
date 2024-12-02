@@ -1,0 +1,36 @@
+{
+  "name": "daily-reminder-desktop",
+  "version": "1.0.0",
+  "description": "Daily Reminder & Calendar Desktop App",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "build": "electron-builder",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": ["daily-reminder", "electron", "desktop-app"],
+  "author": "Your Name",
+  "license": "ISC",
+  "dependencies": {
+    "electron": "^33.2.0"
+  },
+  "devDependencies": {
+    "electron-builder": "^24.6.0"
+  },
+  "build": {
+    "appId": "com.dailyreminder.desktop",
+    "productName": "Daily Reminder",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "**/*"
+    ],
+    "win": {
+      "target": "nsis"
+    },
+    "mac": {
+      "target": "dmg"
+    }
+  }
+}
