@@ -19,3 +19,5 @@ Thumbs.db
 
 # Git Large File Storage (LFS) ile izlenen dosyalar
 *.exe
+
+node_modules/electron/dist/electron.exe
