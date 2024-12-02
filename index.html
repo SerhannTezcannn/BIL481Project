@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daily Reminder App</title>
+    <link rel="stylesheet" href="styles.css">
+    <!-- FullCalendar CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.css" rel="stylesheet">
+</head>
+<body>
+    <h1>Daily Reminder & Calendar Application</h1>
+    <div id="tabs">
+        <button onclick="showTab('aio')">All-in-One</button>
+        <button onclick="showTab('sports')">Sports</button>
+        <button onclick="showTab('academic')">Academic</button>
+        <button onclick="showTab('general')">General</button>
+        
+    </div>
+    
+    <!-- Sports Tab -->
+    <div id="sports" class="tab-content">
+        <h2>Sports Reminders</h2>
+        <form id="sports-form">
+            <input type="date" name="date" required>
+            <input type="time" name="time" required>
+            <textarea name="note" placeholder="Enter reminder note" required></textarea>
+            <button type="submit">Add Reminder</button>
+        </form>
+        <ul class="sports-container"></ul>
+    </div>
+    
+    <!-- Academic Tab -->
+    <div id="academic" class="tab-content">
+        <h2>Academic Reminders</h2>
+        <form id="academic-form">
+            <input type="date" name="date" required>
+            <input type="time" name="time" required>
+            <textarea name="note" placeholder="Enter reminder note" required></textarea>
+            <button type="submit">Add Reminder</button>
+        </form>
+        <ul class="academic-container"></ul>
+    </div>
+
+    <!-- General Tab -->
+    <div id="general" class="tab-content">
+        <h2>General Reminders</h2>
+        <form id="general-form">
+            <input type="date" name="date" required>
+            <input type="time" name="time" required>
+            <textarea name="note" placeholder="Enter reminder note" required></textarea>
+            <button type="submit">Add Reminder</button>
+        </form>
+        <ul class="general-container"></ul>
+    </div>
+
+    <!-- All-in-One Tab -->
+    <div id="aio" class="tab-content">
+        <h2>All-in-One Calendar</h2>
+        <div id="calendar"></div>
+         <!--<ul class="aio-container"></ul>-->
+    </div>
+
+    <!-- External JavaScript File -->
+    <script src="script.js"></script>
+
+    <!-- FullCalendar JS -->
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
+</body>
+</html>
