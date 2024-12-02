@@ -1,0 +1,21 @@
+# Node.js bağımlılıkları
+node_modules/
+
+# Derleme çıktıları
+dist/
+build/
+
+# Log dosyaları
+*.log
+
+# macOS'un gizli dosyaları
+.DS_Store
+
+# Windows'un gizli dosyaları
+Thumbs.db
+
+# VS Code editor ayarları
+.vscode/
+
+# Git Large File Storage (LFS) ile izlenen dosyalar
+*.exe
