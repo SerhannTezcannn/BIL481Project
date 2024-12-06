@@ -15,32 +15,87 @@
         <button onclick="showTab('sports')">Sports</button>
         <button onclick="showTab('academic')">Academic</button>
         <button onclick="showTab('general')">General</button>
-        
+
     </div>
-    
+
     <!-- Sports Tab -->
     <div id="sports" class="tab-content">
         <h2>Sports Reminders</h2>
-        <form id="sports-form">
-            <input type="date" name="date" required>
-            <input type="time" name="time" required>
-            <textarea name="note" placeholder="Enter reminder note" required></textarea>
-            <button type="submit">Add Reminder</button>
-        </form>
-        <ul class="sports-container"></ul>
+        <div id="sports-tabs">
+            <button onclick="showNestedTab('daily-reminders')">Daily Sports Session Reminders</button>
+            <button onclick="showNestedTab('calorie-intake')">Calorie Intake Calculator</button>
+            <button onclick="showNestedTab('fitness-progress')">Fitness Progress Tracking</button>
+        </div>
+        <div id="daily-reminders" class="nested-tab-content">
+            <h3>Daily Sports Session Reminders</h3>
+            <form id="sports-reminder-form">
+                <input type="date" name="date" required>
+                <input type="time" name="time" required>
+                <input type="text" name="note" placeholder="Hatırlatma Notu" required>
+                <button type="submit">Add Reminder</button>
+            </form>
+            <ul id="sports-reminders-list"></ul>
+        </div>
+        <div id="calorie-intake" class="nested-tab-content">
+            <h3>Calorie Intake Calculator</h3>
+            <form id="calorie-form">
+                <input type="text" name="food" placeholder="Yemek" required>
+                <input type="number" name="calories" placeholder="Kalori" required>
+                <button type="submit">Add Calorie</button>
+            </form>
+            <ul id="calorie-list"></ul>
+            <div id="total-calories">Total Calories: 0</div>
+        </div>
+        <div id="fitness-progress" class="nested-tab-content">
+            <h3>Fitness Progress Tracking</h3>
+            <p>Burada fitness ilerlemeniz gösterilecek (grafikler vb.).</p>
+        </div>
     </div>
-    
+
     <!-- Academic Tab -->
     <div id="academic" class="tab-content">
         <h2>Academic Reminders</h2>
-        <form id="academic-form">
-            <input type="date" name="date" required>
-            <input type="time" name="time" required>
-            <textarea name="note" placeholder="Enter reminder note" required></textarea>
-            <button type="submit">Add Reminder</button>
-        </form>
-        <ul class="academic-container"></ul>
+        <div id="academic-tabs">
+            <button onclick="showNestedTab('quiz-exam')">Quizzes & Exams</button>
+            <button onclick="showNestedTab('study-session')">Study Sessions</button>
+            <button onclick="showNestedTab('assignments')">Assignments</button>
+        </div>
+        <div id="quiz-exam" class="nested-tab-content">
+            <h3>Quiz & Exam Schedule</h3>
+            <form id="quiz-exam-form">
+                <input type="date" name="date" required>
+                <input type="time" name="time" required>
+                <input type="text" name="subject" placeholder="Subject" required>
+                <select name="type">
+                    <option value="quiz">Quiz</option>
+                    <option value="exam">Exam</option>
+                </select>
+                <button type="submit">Add Reminder</button>
+            </form>
+            <ul id="quiz-exam-list"></ul>
+        </div>
+        <div id="study-session" class="nested-tab-content">
+            <h3>Daily Study Session Reminders</h3>
+            <form id="study-session-form">
+                <input type="date" name="date" required>
+                <input type="time" name="time" required>
+                <input type="text" name="subject" placeholder="Subject" required>
+                <button type="submit">Add Reminder</button>
+            </form>
+            <ul id="study-session-list"></ul>
+        </div>
+        <div id="assignments" class="nested-tab-content">
+            <h3>Assignment Reminders</h3>
+            <form id="assignment-form">
+                <input type="date" name="due-date" required>
+                <input type="text" name="title" placeholder="Assignment Title" required>
+                <textarea name="details" placeholder="Assignment Details" required></textarea>
+                <button type="submit">Add Reminder</button>
+            </form>
+            <ul id="assignment-list"></ul>
+        </div>
     </div>
+
 
     <!-- General Tab -->
     <div id="general" class="tab-content">
@@ -54,11 +109,10 @@
         <ul class="general-container"></ul>
     </div>
 
-    <!-- All-in-One Tab -->
+        <!-- All-in-One Tab -->
     <div id="aio" class="tab-content">
-        <h2>All-in-One Calendar</h2>
+        <h2>All-in-One View</h2>
         <div id="calendar"></div>
-         <!--<ul class="aio-container"></ul>-->
     </div>
 
     <!-- External JavaScript File -->

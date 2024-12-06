@@ -1,11 +1,71 @@
-// İlk sekmeyi göster
-showTab('aio');
+renderCalendar();
 
-// Takvim ve etkinlik verileri
-document.addEventListener('DOMContentLoaded', function () {
+function showTab(tabName) {
+    const tabs = document.querySelectorAll('.tab-content');
+    const buttons = document.querySelectorAll('#tabs button');
+
+  
+    tabs.forEach(tab => {
+        tab.style.visibility = 'hidden'; 
+        tab.style.height = '0'; 
+        tab.style.opacity = '0'; 
+        tab.style.transform = 'translateY(10px)'; 
+    });
+
+    
+    buttons.forEach(button => {
+        button.classList.remove('active');
+    });
+
+    const activeTab = document.getElementById(tabName.toLowerCase());
+    if (activeTab) {
+        activeTab.style.visibility = 'visible'; 
+        activeTab.style.height = 'auto'; 
+        activeTab.style.opacity = '1';
+        activeTab.style.transform = 'translateY(0)'; 
+
+        const activeButton = Array.from(buttons).find(button => button.textContent.toLowerCase() === tabName.toLowerCase());
+        if (activeButton) {
+            activeButton.classList.add('active');
+        }
+
+        if (tabName.toLowerCase() === 'aio') {
+            renderCalendar(); 
+        }
+    }
+}
+
+
+function showNestedTab(nestedTabName) {
+    const nestedTabs = document.querySelectorAll('.nested-tab-content');
+    nestedTabs.forEach(tab => {
+        if (tab.id === nestedTabName) {
+            tab.classList.add('active');
+        } else {
+            tab.classList.remove('active');
+        }
+    });
+
+
+    const buttons = document.querySelectorAll('#sports-tabs button, #academic-tabs button');
+    buttons.forEach(button => {
+        if (button.innerText.toLowerCase().replace(/\s+/g, '-') === nestedTabName) {
+            button.classList.add('active');
+        } else {
+            button.classList.remove('active');
+        }
+    });
+}
+
+document.addEventListener("DOMContentLoaded", function() {
+    showTab('sports');
+    showNestedTab('daily-reminders'); 
+});
+
+
+
+function renderCalendar() {
     const calendarEl = document.getElementById('calendar');
-
-    // FullCalendar başlatma
     const calendar = new FullCalendar.Calendar(calendarEl, {
         initialView: 'dayGridMonth',
         headerToolbar: {
@@ -14,43 +74,19 @@ document.addEventListener('DOMContentLoaded', function () {
             right: 'dayGridMonth,timeGridWeek,timeGridDay'
         },
         events: [
-            // Sports Tab'dan gelen etkinlikler
-            { title: 'Morning Yoga', start: '2024-11-25T07:30:00', category: 'Sports' },
-            { title: 'Evening Run', start: '2024-11-26T18:00:00', category: 'Sports' },
-        
-            // Academic Tab'dan gelen etkinlikler
-            { title: 'Math Quiz', start: '2024-11-27T11:00:00', category: 'Academic' },
-            { title: 'Physics Exam', start: '2024-11-29T15:30:00', category: 'Academic' },
-        
-            // General Tab'dan gelen etkinlikler
-            { title: 'Buy Groceries', start: '2024-11-25T09:00:00', category: 'General' },
-            { title: 'Dentist Appointment', start: '2024-11-30T14:45:00', category: 'General' }
+            { title: 'Morning Yoga', start: '2024-12-25T07:30:00', category: 'Sports' },
+            { title: 'Math Quiz', start: '2024-12-27T11:00:00', category: 'Academic' },
+            { title: 'Buy Groceries', start: '2024-12-25T09:00:00', category: 'General' }
         ],
         eventColor: '#378006'
     });
 
     calendar.render();
-});
-
-
-
-// Sekme geçişini kontrol et
-function showTab(tabName) {
-    // Tüm sekme içeriklerini gizle
-    const tabs = document.querySelectorAll('.tab-content');
-    tabs.forEach(tab => {
-        tab.style.display = 'none'; // Hepsini gizle
-    });
-
-    // İlgili sekmeyi göster
-    const activeTab = document.getElementById(tabName);
-    if (activeTab) {
-        activeTab.style.display = 'block'; // Seçili sekmeyi göster
-    }
 }
 
 
-// Sekme butonlarına tıklama olayları ekleyin
+
+
 document.querySelector('#tabs').addEventListener('click', (event) => {
     if (event.target.tagName === 'BUTTON') {
         const tabName = event.target.textContent.toLowerCase();
@@ -60,67 +96,65 @@ document.querySelector('#tabs').addEventListener('click', (event) => {
 
 
 
-// Spor hatırlatıcıları formuna veri ekleme
 document.querySelector('#sports-form')?.addEventListener('submit', (e) => {
     e.preventDefault();
     const date = e.target.date.value;
     const time = e.target.time.value;
     const note = e.target.note.value;
     addSportReminder(date, time, note);
-    e.target.reset(); // Formu sıfırlama
+    e.target.reset();
 });
 
-// Akademik hatırlatıcıları formuna veri ekleme
 document.querySelector('#academic-form')?.addEventListener('submit', (e) => {
     e.preventDefault();
     const date = e.target.date.value;
     const time = e.target.time.value;
     const note = e.target.note.value;
     addAcademicReminder(date, time, note);
-    e.target.reset(); // Formu sıfırlama
+    e.target.reset();
 });
 
-// Genel hatırlatıcıları formuna veri ekleme
 document.querySelector('#general-form')?.addEventListener('submit', (e) => {
     e.preventDefault();
     const date = e.target.date.value;
     const time = e.target.time.value;
     const note = e.target.note.value;
     addGeneralReminder(date, time, note);
-    e.target.reset(); // Formu sıfırlama
+    e.target.reset();
 });
 
 
+function addEventToCalendar(title, start) {
+    const calendarEl = document.getElementById('calendar');
+    const calendar = FullCalendar.getCalendar(calendarEl);
+    calendar.addEvent({ title, start, color: '#378006' });
+}
 
-// Spor hatırlatıcılarını ekle
 function addSportReminder(date, time, note) {
     const sportsContainer = document.querySelector('.sports-container');
     const listItem = document.createElement('li');
     listItem.textContent = `Tarih: ${date} | Saat: ${time} | Not: ${note}`;
     sportsContainer.appendChild(listItem);
 
-    // AIO'ya ekle
-    addAllReminder(date, time, note);
+    addEventToCalendar(note, `${date}T${time}`);
 }
 
-// Akademik hatırlatıcıları ekle
+
 function addAcademicReminder(date, time, note) {
     const academicContainer = document.querySelector('.academic-container');
     const listItem = document.createElement('li');
     listItem.textContent = `Tarih: ${date} | Saat: ${time} | Not: ${note}`;
     academicContainer.appendChild(listItem);
 
-    // AIO'ya ekle
-    addAllReminder(date, time, note);
+    addEventToCalendar(note, `${date}T${time}`);
 }
 
-// Genel hatırlatıcıları ekle
+
 function addGeneralReminder(date, time, note) {
     const generalContainer = document.querySelector('.general-container');
     const listItem = document.createElement('li');
     listItem.textContent = `Tarih: ${date} | Saat: ${time} | Not: ${note}`;
     generalContainer.appendChild(listItem);
 
-    // AIO'ya ekle
-    addAllReminder(date, time, note);
+    addEventToCalendar(note, `${date}T${time}`);
 }

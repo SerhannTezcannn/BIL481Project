@@ -1,7 +1,7 @@
 /* Genel Stil Ayarları */
 body {
-    font-family: Arial, sans-serif;
-    background-color: #f9f9f9;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f4f8f6;
     color: #333;
     margin: 0;
     padding: 0;
@@ -10,8 +10,10 @@ body {
 
 /* Başlık */
 h1 {
-    color: #0e8412;
-    margin: 20px 0;
+    color: #0078D7;
+    margin: 30px 0;
+    font-size: 36px;
+    text-shadow: 0 2px 5px rgba(0, 120, 215, 0.3);
 }
 
 /* Sekme Butonları */
@@ -19,42 +21,156 @@ h1 {
     display: flex;
     justify-content: center;
     margin-top: 20px;
-    gap: 15px;
+    gap: 20px;
 }
-
 #tabs button {
-    padding: 12px 25px;
-    font-size: 16px;
+    padding: 14px 28px;
+    font-size: 18px;
     font-weight: bold;
-    background-color: #58be81;
-    color: white;
-    border: none;
-    border-radius: 25px;
+    background-color: #f1f1f1;
+    color: #333;
+    border: 2px solid #0078D7;
+    border-radius: 30px;
     cursor: pointer;
-    transition: background-color 0.3s ease, transform 0.3s ease;
+    transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease, color 0.3s ease;
 }
 
 #tabs button:hover {
-    background-color: #749f77;
+    background-color: #0078D7;
+    color: white;
+    border-color: #005ba1;
     transform: scale(1.1);
+    box-shadow: 0 4px 12px rgba(0, 120, 215, 0.3);
 }
 
-
-
+#tabs button.active {
+    background-color: #0078D7;
+    color: white;
+    border-color: #005ba1;
+    transform: scale(1.1);
+    box-shadow: 0 4px 12px rgba(0, 120, 215, 0.3);
+}
 /* Tab İçeriği */
 .tab-content {
-    display: none;
-    margin-top: 20px;
-    padding: 20px;
-    background-color: #ffffff;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    visibility: hidden;
+    opacity: 0;
+    height: 0;
+    overflow: hidden;
+    transition: opacity 0.3s ease, transform 0.3s ease, height 0.3s ease;
+    transform: translateY(10px);
 }
 
-/* Aktif Tab */
 .tab-content.active {
-    display: block;
+    visibility: visible;
+    opacity: 1;
+    height: auto;
+    transform: translateY(0);
 }
+
+
+
+
+
+
+
+#sports {
+    margin-top: 20px;
+}
+
+/* Sports Tab Nested Tabs */
+#sports-tabs {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-bottom: 30px;
+}
+
+#sports-tabs button {
+    padding: 12px 20px;
+    font-size: 18px;
+    font-weight: bold;
+    background-color: #f1f1f1;
+    color: #333;
+    border: none;
+    border-radius: 30px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+#sports-tabs button:hover {
+    background-color: #0078D7;
+    color: white;
+    transform: scale(1.1);
+    box-shadow: 0 4px 12px rgba(0, 120, 215, 0.3);
+}
+
+#sports-tabs button.active {
+    background-color: #0078D7;
+    color: white;
+    transform: scale(1.1);
+    box-shadow: 0 4px 12px rgba(0, 120, 215, 0.3);
+}
+
+/* Academic Tab Styles */
+#academic-tabs {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-bottom: 30px;
+}
+
+#academic-tabs button {
+    padding: 12px 20px;
+    font-size: 18px;
+    font-weight: bold;
+    background-color: #f1f1f1;
+    color: #333;
+    border: none;
+    border-radius: 30px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+#academic-tabs button:hover {
+    background-color: #0078D7;
+    color: white;
+    transform: scale(1.1);
+    box-shadow: 0 4px 12px rgba(0, 120, 215, 0.3);
+}
+
+#academic-tabs button.active {
+    background-color: #0078D7;
+    color: white;
+    transform: scale(1.1);
+    box-shadow: 0 4px 12px rgba(0, 120, 215, 0.3);
+}
+
+/* Nested Tab Content */
+.nested-tab-content {
+    visibility: hidden;
+    opacity: 0;
+    height: 0;
+    overflow: hidden;
+    transition: opacity 0.3s ease, transform 0.3s ease, height 0.3s ease;
+    transform: translateY(10px);
+}
+
+.nested-tab-content.active {
+    visibility: visible;
+    opacity: 1;
+    height: auto;
+    transform: translateY(0);
+}
+
+/* Nested Tab Forms and Lists */
+
+
+
+
+
+
+
+
 
 /* Formlar ve Giriş Alanları */
 form {
@@ -62,6 +178,10 @@ form {
     flex-direction: column;
     align-items: center;
     margin: 20px 0;
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
 form input, form textarea {
@@ -76,43 +196,28 @@ form input, form textarea {
     transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
-/* Odaklanıldığında border rengini ve gölgeyi değiştir */
 form input:focus, form textarea:focus {
-    border-color: #4CAF50;
+    border-color: #066ce8;
     box-shadow: 0 0 8px rgba(76, 175, 80, 0.2);
     outline: none;
-}
-
-/* Geriye doğru koyu gölge */
-form input, form textarea {
-    background-color: #f9f9f9;
-}
-
-/* Placeholder text stilleri */
-form input::placeholder, form textarea::placeholder {
-    color: #999;
-    font-style: italic;
-}
-
-form textarea {
-    resize: none;
 }
 
 form button {
     padding: 12px 25px;
     font-size: 16px;
     font-weight: bold;
-    background-color: #4caf9b;
+    background-color: rgb(251, 132, 132);
     color: white;
     border: none;
-    border-radius: 25px;
+    border-radius: 30px;
     cursor: pointer;
-    transition: background-color 0.3s ease, transform 0.3s ease;
+    transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 form button:hover {
-    background-color: #8baf8d;
+    background-color: #5cccee;
     transform: scale(1.1);
+    box-shadow: 0 4px 10px rgba(0, 128, 0, 0.2);
 }
 
 /* Hatırlatıcılar ve Listeler */
@@ -123,13 +228,14 @@ ul {
 }
 
 ul li {
-    background-color: #f1f1f1;
+    background-color: #ffffff;
     border-left: 5px solid #0078D7;
     padding: 12px;
     margin: 12px 0;
-    border-radius: 5px;
+    border-radius: 8px;
     text-align: left;
     font-size: 16px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
 }
 
 /* Sekme Bölümleri */
@@ -142,12 +248,11 @@ ul li {
 
 /* Güncellenmiş Tab Başlıkları */
 section h3 {
-    color: #4CAF50;
+    color: #4c7aaf;
     margin-bottom: 10px;
     font-size: 22px;
     font-weight: bold;
 }
-
 
 /* Üst Bilgi Alanı */
 #tabs {
@@ -170,42 +275,196 @@ p {
 
 /* AIO Tab */
 #aio .section {
-    background-color: #f9f9f9;
+    background-color: #ffffff;
     padding: 15px;
     border-radius: 8px;
-    box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
 #aio .section h3 {
     font-size: 24px;
     color: #0078D7;
 }
-/* AIO Sekmesi */
+
 #aio .aio-container {
     margin-top: 20px;
 }
 
 #aio .aio-container li {
-    background-color: #c8e6c9;
+    background-color: #e3f2fd;
 }
+
 
 /* Sports, Academic, General Sekmeleri */
 .sports-container li, .academic-container li, .general-container li {
-    background-color: #ffecb3;
+    background-color: #fff8e1;
+    padding: 14px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    margin-bottom: 12px;
+}
+
+.sports-container li:hover, .academic-container li:hover, .general-container li:hover {
+    background-color: #ffe082;
+    transform: translateY(-2px);
 }
 
 
-.tab-content {
-    display: none; 
+/* Aktif buton rengi */
+#tabs button.active {
+    background-color: #0078D7;
+    color: white;
+    border-color: #005ba1;
+    transform: scale(1.1);
+    box-shadow: 0 4px 15px rgba(0, 120, 215, 0.3);
+}
+/* Basic reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Arial', sans-serif;
 }
 
-.tab-content.active {
-    display: block;
+/* Calendar Container */
+.calendar-container {
+    max-width: 80%;
+    margin: 20px auto;
+    text-align: center;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 15px;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.1);
 }
 
+h1 {
+    font-size: 36px;
+    font-weight: 600;
+    margin-bottom: 20px;
+    color: #333;
+}
 
-/* Takvim görünümü */
+/* FullCalendar styles */
 #calendar {
-    max-width: 900px;
+    max-width: 100%;
     margin: 0 auto;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 4px 25px rgba(0, 0, 0, 0.2);
 }
+
+.fc-toolbar {
+    background-color: #0078D7;
+    color: white;
+    padding: 15px;
+    border-radius: 15px 15px 0 0;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.fc-toolbar h2 {
+    font-size: 28px;
+    font-weight: 600;
+    margin: 0;
+}
+
+.fc-button-group {
+    display: flex;
+    gap: 15px;
+}
+
+/* Button styles */
+.fc-button {
+    background-color: #005fa3;
+    color: white;
+    font-size: 16px;
+    padding: 10px 20px;
+    border-radius: 5px;
+    border: none;
+    transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.fc-button:hover {
+    background-color: #004080;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* Days Styling */
+.fc-daygrid-day {
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    margin: 5px;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.fc-daygrid-day:hover {
+    background-color: #e1f5fe;
+    cursor: pointer;
+}
+
+.fc-daygrid-day-number {
+    font-size: 18px;
+    font-weight: bold;
+    color: #333;
+}
+
+/* Highlight Today */
+.fc-day-today {
+    background-color: #0078D7;
+    color: white;
+    font-weight: 600;
+    border-radius: 8px;
+}
+
+/* Event Styling */
+.fc-event {
+    background-color: #28a745;
+    color: white;
+    font-size: 14px;
+    padding: 8px;
+    border-radius: 10px;
+    text-align: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s, transform 0.3s;
+}
+
+.fc-event:hover {
+    background-color: #218838;
+    transform: translateY(-2px);
+}
+
+.fc-event-tooltip {
+    background-color: #333;
+    color: white;
+    padding: 10px;
+    font-size: 14px;
+    border-radius: 5px;
+}
+
+/* Week and Day View Titles */
+.fc-view h2 {
+    font-size: 24px;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+.fc-daygrid-week-number {
+    background-color: #f1f1f1;
+    border-radius: 8px;
+    padding: 5px;
+}
+
+/* Adjust for mobile */
+@media (max-width: 768px) {
+    .fc-toolbar h2 {
+        font-size: 22px;
+    }
+
+    .fc-button {
+        font-size: 14px;
+    }
+}
+
