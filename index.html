@@ -48,8 +48,24 @@
         </div>
         <div id="fitness-progress" class="nested-tab-content">
             <h3>Fitness Progress Tracking</h3>
-            <p>Burada fitness ilerlemeniz gösterilecek (grafikler vb.).</p>
+            <form id="fitness-goal-form">
+                <input type="number" id="goal" name="goal" placeholder="Set Goal (e.g., Total Reps)" required>
+                <button type="submit">Set Goal</button>
+            </form>
+            <p id="goal-display"></p>
+            <div id="progress-bar-container">
+                <div id="progress-bar" style="width: 0%;">0%</div>
+            </div>
+            <form id="fitness-progress-form">
+                <input type="date" name="date" required>
+                <input type="number" name="reps" placeholder="Reps Completed" required>
+                <textarea name="notes" placeholder="Progress Notes"></textarea>
+                <button type="submit">Add Progress</button>
+            </form>
+            <ul id="fitness-progress-list"></ul>
         </div>
+        
+        
     </div>
 
     <!-- Academic Tab -->
@@ -66,7 +82,7 @@
                 <input type="date" name="date" required>
                 <input type="time" name="time" required>
                 <input type="text" name="subject" placeholder="Subject" required>
-                <select name="type">
+                <select id="type" name="type">
                     <option value="quiz">Quiz</option>
                     <option value="exam">Exam</option>
                 </select>
