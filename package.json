@@ -8,10 +8,17 @@
     "build": "electron-builder",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": ["daily-reminder", "electron", "desktop-app"],
+  "keywords": [
+    "daily-reminder",
+    "electron",
+    "desktop-app"
+  ],
   "author": "Your Name",
   "license": "ISC",
   "dependencies": {
+    "@fullcalendar/core": "^6.1.15",
+    "@fullcalendar/daygrid": "^6.1.15",
+    "@fullcalendar/interaction": "^6.1.15",
     "electron": "^33.2.0"
   },
   "devDependencies": {

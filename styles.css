@@ -67,12 +67,6 @@ h1 {
     transform: translateY(0);
 }
 
-
-
-
-
-
-
 #sports {
     margin-top: 20px;
 }
@@ -163,14 +157,6 @@ h1 {
 }
 
 /* Nested Tab Forms and Lists */
-
-
-
-
-
-
-
-
 
 /* Formlar ve Giriş Alanları */
 form {
@@ -279,6 +265,7 @@ p {
     padding: 15px;
     border-radius: 8px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    
 }
 
 #aio .section h3 {
@@ -346,12 +333,12 @@ h1 {
 
 /* FullCalendar styles */
 #calendar {
-    max-width: 100%;
-    margin: 0 auto;
-    border-radius: 15px;
-    overflow: hidden;
-    box-shadow: 0 4px 25px rgba(0, 0, 0, 0.2);
+    width: 100%; /* Ebeveynin genişliğine uyumlu */
+    height: auto; /* Yüksekliği otomatik ayarla */
+    min-height: 500px; /* Minimum yükseklik */
+    box-sizing: border-box; /* İçerik taşmasını engelle */
 }
+
 
 .fc-toolbar {
     background-color: #0078D7;

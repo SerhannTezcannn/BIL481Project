@@ -1,3 +1,4 @@
+
 document.addEventListener('DOMContentLoaded', () => {
     console.log("JavaScript is loaded and working!");
 
@@ -16,7 +17,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             // Veriyi uygun listeye ve takvime ekle
             switch (formId) {
-                case 'sports-form':
+                case 'sports-reminder-form':
                     handleSportsForm(formData);
                     break;
                 case 'academic-form':
@@ -34,9 +35,19 @@ document.addEventListener('DOMContentLoaded', () => {
                 case 'fitness-progress-form':
                     handleFitnessProgressForm(formData);
                     break;
+                case 'calorie-form':
+                    handleCalorieForm(formData);
+                    break;
+                case 'study-session-form':
+                    handleStudySessionForm(formData);
+                    break;
+                case 'assignment-form':
+                    handleAssignmentForm(formData);
+                    break;
                 default:
-                    console.error('Unknown form:', formId);
+                    console.error(`Unknown form ID: ${formId}`);
             }
+            
 
             form.reset(); // Formu sıfırla
         });
@@ -57,16 +68,31 @@ document.querySelector('#general-form')?.addEventListener('submit', (e) => {
     e.target.reset(); // Formu sıfırlama
 });
 
+function addGeneralReminder(date, time, note) {
+    // Hatırlatma işlemleri burada yapılır
+    console.log(`General reminder added: Date=${date}, Time=${time}, Note=${note}`);
+    
+    // Örneğin, bir listeye ekleme:
+    const list = document.querySelector('.general-container');
+    const listItem = document.createElement('li');
+    listItem.textContent = `Tarih: ${date} | Saat: ${time} | Not: ${note}`;
+    list.appendChild(listItem);
+
+    // Takvime ekleme
+    addEventToCalendar(note, `${date}T${time}`);
+}
 
 
 
 // Spor formunu işle
 function handleSportsForm(formData) {
-    const list = document.getElementById('sports-list');
+    const list = document.getElementById('sports-reminders-list');
     const date = formData.get('date');
     const time = formData.get('time');
     const note = formData.get('note');
     appendToList(list, `Date: ${date} | Time: ${time} | Note: ${note}`);
+    const start = `${date}T${time}`; // ISO 8601 formatında tarih ve saat
+    addEventToCalendar(note, start); // Takvim için veri gönder
 }
 
 // Akademik formu işle
@@ -76,27 +102,24 @@ function handleAcademicForm(formData) {
     const time = formData.get('time');
     const note = formData.get('note');
     appendToList(list, `Date: ${date} | Time: ${time} | Note: ${note}`);
+    const start = `${date}T${time}`; // ISO 8601 formatında tarih ve saat
+    addEventToCalendar(note, start); // Takvim için veri gönder
 }
 
-// Genel formu işle
 function handleGeneralForm(formData) {
     const generalContainer = document.querySelector('.general-container');
-    
+
     // Yeni liste öğesi oluştur
     const listItem = document.createElement('li');
     const date = formData.get('date');
     const time = formData.get('time');
     const note = formData.get('note');
-    listItem.textContent = `Tarih: ${date} | Saat: ${time} | Not: ${note}`;
     
-    // Listeye ekle
-    generalContainer.appendChild(listItem);
 
     // Takvime ekle
-    //addEventToCalendar(note, `${date}T${time}`);
-    addAllReminder(date, time, note);
+    const start = `${date}T${time}`; // ISO 8601 formatında tarih ve saat
+    addEventToCalendar(note, start); // Takvim için veri gönder
 }
-
 
 // Quiz/Exam formunu işle
 function handleQuizExamForm(formData) {
@@ -105,10 +128,80 @@ function handleQuizExamForm(formData) {
     const time = formData.get('time');
     const subject = formData.get('subject');
     const type = formData.get('type');
+    
+    // Listeye ekleme
     appendToList(list, `Date: ${date} | Time: ${time} | Subject: ${subject} (${type})`);
+    
+    // Takvim için uygun açıklama oluşturma
+    const note = `${type.toUpperCase()}: ${subject}`; // Örnek: "QUIZ: Mathematics"
+    const start = `${date}T${time}`; // ISO 8601 formatında tarih ve saat
+    
+    // Takvim için veri gönder
+    addEventToCalendar(note, start);
 }
 
-// Fitness hedefi belirleme
+
+function updateProgressBar() {
+    const progressBar = document.getElementById('progress-bar');
+    const progressPercent = Math.min((currentProgress / fitnessGoal) * 100, 100);
+    progressBar.style.width = `${progressPercent}%`;
+    progressBar.textContent = `${Math.round(progressPercent)}%`;
+
+    if (currentProgress >= fitnessGoal) {
+        progressBar.style.backgroundColor = '#0078D7';
+        progressBar.textContent = 'Goal Achieved!';
+    }
+}
+
+function addFitnessProgress(date, reps, notes) {
+    const fitnessProgressList = document.getElementById('fitness-progress-list');
+    const listItem = document.createElement('li');
+    listItem.textContent = `Date: ${date} | Reps: ${reps} | Notes: ${notes || 'N/A'}`;
+    fitnessProgressList.appendChild(listItem);
+}
+function handleFitnessGoalForm(formData) {
+    const goal = formData.get('goal'); // Hedef değerini al
+    const goalDisplay = document.getElementById('goal-display'); 
+    const progressBar = document.getElementById('progress-bar');
+    
+    goalDisplay.textContent = `Goal: ${goal} reps`;
+    progressBar.style.width = "0%";
+    progressBar.textContent = "0%";
+}
+function handleCalorieForm(formData) {
+    const list = document.getElementById('calorie-list');
+    const totalCalories = document.getElementById('total-calories');
+    const food = formData.get('food');
+    const calories = parseInt(formData.get('calories'), 10);
+    
+    appendToList(list, `${food}: ${calories} kcal`);
+    
+    // Toplam kaloriyi güncelle
+    const currentTotal = parseInt(totalCalories.textContent.replace(/\D/g, ''), 10) || 0;
+    totalCalories.textContent = `Total Calories: ${currentTotal + calories}`;
+}
+function handleStudySessionForm(formData) {
+    const list = document.getElementById('study-session-form');
+    const date = formData.get('date');
+    const time = formData.get('time');
+    const subject = formData.get('subject');
+    
+    appendToList(list, `Date: ${date} | Time: ${time} | Subject: ${subject}`);
+    
+    const start = `${date}T${time}`;
+    addEventToCalendar(`Study: ${subject}`, start);
+}
+function handleAssignmentForm(formData) {
+    const list = document.getElementById('assignment-form');
+    const dueDate = formData.get('due-date');
+    const title = formData.get('title');
+    const details = formData.get('details');
+    
+    appendToList(list, `Due: ${dueDate} | Title: ${title} | Details: ${details}`);
+    
+    const start = `${dueDate}T00:00`; // Ödevler için yalnızca tarih bilgisi
+    addEventToCalendar(`Assignment: ${title}`, start);
+}
 
 
 
@@ -123,11 +216,10 @@ function appendToList(list, content) {
     }
 }
 
+
 function addEventToCalendar(title, start) {
-    const calendarEl = document.getElementById('calendar');
-    if (calendarEl && calendarEl.fullCalendarInstance) {
-        const calendar = calendarEl.fullCalendarInstance;
-        calendar.addEvent({
+    if (calendarInstance) {
+        calendarInstance.addEvent({
             title,
             start,
             color: '#FF5733' // Kategoriye göre özelleştirilebilir
@@ -136,7 +228,7 @@ function addEventToCalendar(title, start) {
         console.error('Calendar instance not initialized.');
     }
 }
- 
+
 
 
 // Takvimi başlatma
@@ -194,10 +286,14 @@ function showTab(tabName) {
         }
 
         if (tabName.toLowerCase() === 'aio') {
-            renderCalendar(); 
+            console.log('Rendering Calendar for All-in-One Tab');
+            if (!calendarInstance) {
+                renderCalendar();
+            }
         }
     }
 }
+
 
 function showNestedTab(nestedTabName) {
     const nestedTabs = document.querySelectorAll('.nested-tab-content');
@@ -252,23 +348,4 @@ document.querySelector('#fitness-progress-form')?.addEventListener('submit', (e)
     updateProgressBar();
     e.target.reset();
 });
-
-function updateProgressBar() {
-    const progressBar = document.getElementById('progress-bar');
-    const progressPercent = Math.min((currentProgress / fitnessGoal) * 100, 100);
-    progressBar.style.width = `${progressPercent}%`;
-    progressBar.textContent = `${Math.round(progressPercent)}%`;
-
-    if (currentProgress >= fitnessGoal) {
-        progressBar.style.backgroundColor = '#0078D7';
-        progressBar.textContent = 'Goal Achieved!';
-    }
-}
-
-function addFitnessProgress(date, reps, notes) {
-    const fitnessProgressList = document.getElementById('fitness-progress-list');
-    const listItem = document.createElement('li');
-    listItem.textContent = `Date: ${date} | Reps: ${reps} | Notes: ${notes || 'N/A'}`;
-    fitnessProgressList.appendChild(listItem);
-}
 
