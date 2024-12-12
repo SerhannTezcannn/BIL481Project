@@ -1,20 +1,158 @@
-const { app, BrowserWindow } = require('electron');
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daily Reminder App</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <h1>RemindALL</h1>
+    <div id="tabs">
+        <button onclick="showTab('aio')">All-in-One</button>
+        <button onclick="showTab('sports')">Sports</button>
+        <button onclick="showTab('academic')">Academic</button>
+        <button onclick="showTab('general')">General</button>
 
-let mainWindow;
+    </div>
 
-app.on('ready', () => {
-    mainWindow = new BrowserWindow({
-        width: 800,
-        height: 600,
-        webPreferences: {
-            nodeIntegration: true
-        }
-    });
-    mainWindow.loadFile('index.html');
-});
+    <!-- Sports Tab -->
+    <div id="sports" class="tab-content">
+        <h2>Sports Reminders</h2>
+        <div id="sports-tabs">
+            <button onclick="showNestedTab('daily-reminders')">Daily Sports Session Reminders</button>
+            <button onclick="showNestedTab('calorie-intake')">Calorie Intake Calculator</button>
+            <button onclick="showNestedTab('fitness-progress')">Fitness Progress Tracking</button>
+        </div>
+        <div id="daily-reminders" class="nested-tab-content">
+            <h3>Daily Sports Session Reminders</h3>
+            <form id="sports-reminder-form">
+                <input type="date" name="date" required>
+                <input type="time" name="start-time" placeholder="Start Time" required>
+                <input type="time" name="end-time" placeholder="End Time" required>
+                <input type="text" name="note" placeholder="Hatırlatma Notu" required>
+                <button type="submit">Add Reminder</button>
+            </form>
+            <ul id="sports-reminders-list"></ul>
+        </div>
+        <div id="calorie-intake" class="nested-tab-content">
+            <h3>Calorie Intake Calculator</h3>
+            <form id="calorie-form">
+                <input type="text" name="food" placeholder="Yemek" required>
+                <input type="number" name="calories" placeholder="Kalori" required>
+                <button type="submit">Add Calorie</button>
+            </form>
+            <ul id="calorie-list"></ul>
+            <div id="total-calories">Total Calories: 0</div>
+        </div>
+        <div id="fitness-progress" class="nested-tab-content">
+            <h3>Fitness Progress Tracking</h3>
+            <form id="fitness-goal-form">
+                <input type="number" id="goal" name="goal" placeholder="Set Goal (e.g., Total Reps)" required>
+                <button type="submit">Set Goal</button>
+            </form>
+            <p id="goal-display"></p>
+            <div id="progress-bar-container">
+                <div id="progress-bar" style="width: 0%;">0%</div>
+            </div>
+            <form id="fitness-progress-form">
+                <input type="date" name="date" required>
+                <input type="number" name="reps" placeholder="Reps Completed" required>
+                <textarea name="notes" placeholder="Progress Notes"></textarea>
+                <button type="submit">Add Progress</button>
+            </form>
+            <ul id="fitness-progress-list"></ul>
+        </div>
+        
+        
+    </div>
 
-app.on('window-all-closed', () => {
-    if (process.platform !== 'darwin') {
-        app.quit();
-    }
-});
+    <!-- Academic Tab -->
+    <div id="academic" class="tab-content">
+        <h2>Academic Reminders</h2>
+        <div id="academic-tabs">
+            <button onclick="showNestedTab('quiz-exam')">Quizzes & Exams</button>
+            <button onclick="showNestedTab('study-session')">Study Sessions</button>
+            <button onclick="showNestedTab('assignments')">Assignments</button>
+        </div>
+        <div id="quiz-exam" class="nested-tab-content">
+            <h3>Quiz & Exam Schedule</h3>
+            <form id="quiz-exam-form">
+                <input type="date" name="date" required>
+                <input type="time" name="start-time" placeholder="Start Time" required>
+                <input type="time" name="end-time" placeholder="End Time" required>
+                <input type="text" name="subject" placeholder="Subject" required>
+                <select id="type" name="type">
+        <option value="quiz">Quiz</option>
+        <option value="exam">Exam</option>
+    </select>
+    <button type="submit">Add Reminder</button>
+            </form>
+            <ul id="quiz-exam-list"></ul>
+        </div>
+        <div id="study-session" class="nested-tab-content">
+            <h3>Daily Study Session Reminders</h3>
+            <form id="study-session-form">
+                <input type="date" name="date" required>
+                <input type="time" name="start-time" placeholder="Start Time" required>
+                <input type="time" name="end-time" placeholder="End Time" required>
+                <input type="text" name="subject" placeholder="Subject" required>
+
+                <button type="submit">Add Reminder</button>
+            </form>
+            <ul id="study-session-list"></ul>
+        </div>
+        <div id="assignments" class="nested-tab-content">
+            <h3>Assignment Reminders</h3>
+            <form id="assignment-form">
+                <input type="date" name="due-date" required>
+                <input type="text" name="title" placeholder="Assignment Title" required>
+                <textarea name="details" placeholder="Assignment Details" required></textarea>
+                <button type="submit">Add Reminder</button>
+            </form>
+            <ul id="assignment-list"></ul>
+        </div>
+    </div>
+
+
+    <!-- General Tab -->
+    <div id="general" class="tab-content">
+        <h2>General Reminders</h2>
+        <form id="general-form">
+            <input type="date" name="date" required>
+            <input type="time" name="time" required>
+            <textarea name="note" placeholder="Enter reminder note" required></textarea>
+            <button type="submit">Add Reminder</button>
+        </form>
+        <ul id="general-container"></ul>  
+    </div>
+
+        <!-- All-in-One Tab -->
+    <div id="aio" class="tab-content">
+        <h2>All-in-One View</h2>
+        <div id="calendar"></div>
+    </div>
+
+    <!-- Silme Modal'ı -->
+    <div id="deleteModal" class="modal">
+        <div class="modal-content">
+            <h4>Are You Sure You Want to Delete This Event?</h4>
+            <p>This event will be permanently deleted and cannot be undone.</p>
+        </div>
+        <div class="modal-footer">
+            <button id="cancelDelete" class="btn">Cancel</button>
+            <button id="confirmDelete" class="btn">Delete</button>
+        </div>
+    </div>
+
+
+    <!-- External JavaScript File -->
+    <script src="script.js"></script>
+
+    <!-- FullCalendar JS -->
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
+</body>
+
+
+
+</html>
