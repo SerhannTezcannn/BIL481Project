@@ -47,12 +47,11 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // Yeni bir akademik hatırlatıcı ekle
-function addAcademicReminder(day, start_time, end_time, type, desc) {
+function addAcademicReminder(day, time, duration, desc) {
     const data = {
         day: day,
-        start_time: start_time,
-        end_time: end_time,
-        type: type,
+        time: time,
+        duration: duration,
         desc: desc
     };
 
@@ -106,6 +105,37 @@ function addGeneralReminder(day, time, duration, desc) {
     })
     .catch(error => {
         console.error("Error adding general reminder:", error);
+    });
+}
+
+function addQuizReminder(date, start_time, end_time, subject, type) {
+    const data = {
+        date: date,
+        start_time: start_time,
+        end_time: end_time,
+        subject: subject,
+        type: type
+    };
+
+    fetch("http://127.0.0.1:8000/academy/", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(data)
+    })
+    .then(response => {
+        if (response.ok) {
+            console.log("Quiz reminder added successfully");
+            fetchQuizReminders(); // Listeyi güncelle
+        } else {
+            return response.json().then(err => {
+                throw new Error(err.detail);
+            });
+        }
+    })
+    .catch(error => {
+        console.error("Error adding quiz reminder:", error);
     });
 }
 
@@ -208,19 +238,51 @@ function fetchSportsReminders() {
 }
 
 
+function fetchQuizReminders() {
+    fetch("http://127.0.0.1:8000/quiz/")
+        .then(response => response.json())
+        .then(data => {
+            const list = document.getElementById('quiz-exam-list');
+            list.innerHTML = ""; // Önce listeyi temizle
+            data.quiz_reminders.forEach(reminder => {
+                const listItem = document.createElement('li');
+                listItem.textContent = `Date: ${reminder[1]} | Start Time: ${reminder[2]} | End Time: ${reminder[3]} | Subject: ${reminder[4]} (${reminder[5]})`;
+                list.appendChild(listItem);
+
+                // Takvime ekle
+                const start = `${reminder[1]}T${reminder[2]}`;
+                const end = `${reminder[1]}T${reminder[3]}`;
+                addEventToCalendarDuration(reminder[4], start, end, 'quiz');
+            });
+        })
+        .catch(error => {
+            console.error("Error fetching quiz reminders:", error);
+        });
+}
+
 
 
 
 function handleSportsForm(formData) {
-    const list = document.getElementById('sports-reminders-list');
+    const list = document.getElementById('daily-sports-session-list');
     const date = formData.get('date');
-    const time = formData.get('time');
-    const note = formData.get('note');
+    const startTime = formData.get('start-time');
+    const endTime = formData.get('end-time');
+    const activity = formData.get('activity');
 
-    appendToList(list, `Date: ${date} | Time: ${time} | Note: ${note}`);
+    // Debugging logs to verify data received
+    console.log("Form data received:", { date, startTime, endTime, activity });
 
-    const start = `${date}T${time}`; 
-    addEventToCalendar(note, start, 'sports'); 
+    appendToList(list, `Date: ${date} | Start Time: ${startTime} | End Time: ${endTime} | Activity: ${activity}`);
+
+    const start = `${date}T${startTime}`;
+    const end = `${date}T${endTime}`;
+
+    // Ensure the date and time formats are correct
+    console.log("Adding to calendar:", { title: `Sports: ${activity}`, start, end });
+
+    // Add to calendar only
+    addEventToCalendarDuration(`Sports: ${activity}`, start, end, 'sports');
 }
 
 function handleAcademicForm(formData) {
@@ -248,51 +310,22 @@ function handleGeneralForm(formData) {
     addEventToCalendar(note, start, 'general'); 
 }
 
-function handleQuizExamForm(formData) {
+function handleQuizForm(formData) {
     const list = document.getElementById('quiz-exam-list');
     const date = formData.get('date');
-    const startTime = formData.get('start-time');
-    const endTime = formData.get('end-time');
+    const start_time = formData.get('start-time');
+    const end_time = formData.get('end-time');
     const subject = formData.get('subject');
     const type = formData.get('type');
 
-    appendToList(list, `Date: ${date} | Start Time: ${startTime} | End Time: ${endTime} | Subject: ${subject} (${type})`);
+    appendToList(list, `Date: ${date} | Start Time: ${start_time} | End Time: ${end_time} | Subject: ${subject} (${type})`);
 
-    const title = `${type.toUpperCase()}: ${subject}`;
-    const start = `${date}T${startTime}`;
-    const end = `${date}T${endTime}`;
-
-    const data = {
-        date: date,
-        start_time: startTime,
-        end_time: endTime,
-        subject: subject,
-        type: type
-    };
-
-    fetch("http://127.0.0.1:8000/quiz_exam/", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify(data)
-    })
-    .then(response => {
-        if (response.ok) {
-            console.log("Quiz/Exam reminder added successfully");
-            fetchQuizExamReminders(); // Listeyi güncelle
-        } else {
-            return response.json().then(err => {
-                throw new Error(err.detail);
-            });
-        }
-    })
-    .catch(error => {
-        console.error("Error adding quiz/exam reminder:", error);
-    });
-
-    addEventToCalendarDuration(title, start, end, type);
+    const start = `${date}T${start_time}`;
+    const end = `${date}T${end_time}`;
+    addQuizReminder(date, start_time, end_time, subject, type);
+    addEventToCalendarDuration(`${type.toUpperCase()}: ${subject}`, start, end, 'quiz');
 }
+
 
 function fetchQuizExamReminders() {
     fetch("http://127.0.0.1:8000/quiz_exam/")
@@ -301,6 +334,7 @@ function fetchQuizExamReminders() {
             const list = document.getElementById('quiz-exam-list');
             list.innerHTML = ""; // Önce listeyi temizle
             data.quiz_exam_reminders.forEach(reminder => {
+                // Listeye ekle
                 const listItem = document.createElement('li');
                 listItem.textContent = `Date: ${reminder.date} | Start Time: ${reminder.start_time} | End Time: ${reminder.end_time} | Subject: ${reminder.subject} (${reminder.type})`;
                 list.appendChild(listItem);
@@ -316,6 +350,7 @@ function fetchQuizExamReminders() {
         });
 }
 
+
 function addEventToCalendarDuration(title, start, end, category) {
     if (calendarInstance) {
         calendarInstance.addEvent({
@@ -330,6 +365,7 @@ function addEventToCalendarDuration(title, start, end, category) {
         console.error('Calendar instance not initialized.');
     }
 }
+
 
 function handleStudySessionForm(formData) {
     const list = document.getElementById('study-session-list');
@@ -379,15 +415,17 @@ function handleStudySessionForm(formData) {
 function handleDailySportsSessionForm(formData) {
     const list = document.getElementById('daily-sports-session-list');
     const date = formData.get('date');
-    const time = formData.get('time');
+    const startTime = formData.get('start-time');
+    const endTime = formData.get('end-time');
     const activity = formData.get('activity');
 
-    appendToList(list, `Date: ${date} | Time: ${time} | Activity: ${activity}`);
+    appendToList(list, `Date: ${date} | Start Time: ${startTime} | End Time: ${endTime} | Activity: ${activity}`);
 
-    const start = `${date}T${time}`;
-    const duration = "1h";
-    const endTime = parseEndTime(time, duration);
-    addEventToCalendar(`Sports: ${activity}`, start, 'sports', `${date}T${endTime}`);
+    const start = `${date}T${startTime}`;
+    const end = `${date}T${endTime}`;
+
+    // Add to calendar only
+    addEventToCalendarDuration(`Sports: ${activity}`, start, end, 'sports');
 }
 
 function updateProgressBar() {
@@ -518,26 +556,30 @@ function renderCalendar() {
             info.el.appendChild(deleteIcon);
 
             // Çarpı simgesine tıklandığında etkinliği silme işlemi
-            deleteIcon.addEventListener('click', function(e) {
-                e.stopPropagation(); // Çarpıya tıklanınca eventClick işlevini tetiklemesin
-                const confirmDelete = confirm(`Are you sure you want to delete "${info.event.title}"?`);
-                if (confirmDelete) {
-                    const [day, time] = info.event.startStr.split('T');
-                    const desc = info.event.title;
+            // Çarpı simgesine tıklandığında etkinliği silme işlemi
+deleteIcon.addEventListener('click', function(e) {
+    e.stopPropagation(); // Çarpıya tıklanınca eventClick işlevini tetiklemesin
 
-                    // Kategoriye göre backend'e silme isteği gönder
-                    if (category === 'academic') {
-                        removeAcademicReminder(day, time);
-                    } else if (category === 'general') {
-                        removeGeneralReminder(day, time);
-                    } else if (category === 'sports') {
-                        removeSportsReminder(day, time);
-                    }
+    const confirmDelete = confirm('Are you sure you want to delete "${info.event.title}"?');
+    if (confirmDelete) {
+        const [day, time] = info.event.startStr.split('T'); // Tarih ve saat bilgisini al
+        const desc = info.event.title; // Etkinlik açıklamasını al
+        const duration = info.event.extendedProps.duration; // Süre bilgisini al
+        const category = info.event.extendedProps.category; // Kategoriyi al
 
-                    // Takvimden etkinliği sil
-                    info.event.remove();
-                }
-            });
+        // Kategoriye göre backend'e silme isteği gönder
+        if (category === 'academic') {
+            removeAcademicReminder(day, time, duration, desc);
+        } else if (category === 'general') {
+            removeGeneralReminder(day, time, duration, desc);
+        } else if (category === 'sports') {
+            removeSportsReminder(day, time, duration, desc);
+        }
+
+        // Takvimden etkinliği sil
+        info.event.remove();
+    }
+});
         }
     });
 
@@ -551,23 +593,27 @@ function renderCalendar() {
     // Silme butonuna tıklanırsa, etkinliği takvimden sil
     confirmDelete.onclick = function() {
         if (eventToDelete) {
-            const [day, time] = info.event.startStr.split('T');
-                    // Kategoriye göre backend'e silme isteği gönder
-                    if (category === 'academic') {
-                        removeAcademicReminder(day, time);
-                    } else if (category === 'general') {
-                        removeGeneralReminder(day, time);
-                    } else if (category === 'sports') {
-                        removeSportsReminder(day, time);
-                    }
-
-                    // Takvimden etkinliği sil
-                    info.event.remove();
-
-            eventToDelete.remove(); 
-            removeGeneralReminder(day, time); // Etkinliği takvimden sil
-            deleteModal.style.display = 'none';  // Modal'ı kapat
-        }
+            // Etkinlik bilgilerini al
+            const [day, time] = eventToDelete.startStr.split('T');
+            const desc = eventToDelete.title; // Etkinlik başlığı
+            const duration = eventToDelete.extendedProps.duration; // Etkinlik süresi
+    
+            // Kategoriye göre backend'e silme isteği gönder
+            const category = eventToDelete.extendedProps.category;
+            if (category === 'academic') {
+                removeAcademicReminder(day, time, duration, desc);
+            } else if (category === 'general') {
+                removeGeneralReminder(day, time, duration, desc);
+            } else if (category === 'sports') {
+                removeSportsReminder(day, time, duration, desc);
+            }
+    
+            // Takvimden etkinliği sil
+            eventToDelete.remove();
+    
+            // Modal'ı kapat
+            deleteModal.style.display = 'none';
+        }
     };
 
     // İptal butonuna tıklanırsa, modal'ı kapat
@@ -672,8 +718,10 @@ function removeAcademicReminder(day, time, desc) {
 }
 
 // Genel bir hatırlatıcıyı sil
+// Genel bir hatırlatıcıyı sil
 function removeGeneralReminder(day, time, desc) {
-    const url = `http://127.0.0.1:8000/general/?day=${day}&time=${time}&desc=${desc}`;
+    // URL parametreleri ile direkt isteği oluştur
+    const url = 'http://127.0.0.1:8000/general/?day=${encodeURIComponent(day)}&time=${encodeURIComponent(time)}&desc=${encodeURIComponent(desc)}';
 
     fetch(url, {
         method: "DELETE",
@@ -694,7 +742,7 @@ function removeGeneralReminder(day, time, desc) {
     })
     .catch(error => {
         console.error("Error removing general reminder:", error);
-    });
+    });
 }
 
 
