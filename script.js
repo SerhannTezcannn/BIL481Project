@@ -45,6 +45,91 @@ document.addEventListener('DOMContentLoaded', () => {
     renderCalendar();
 });
 
+
+// Akademik bir hatırlatıcıyı sil
+function removeAcademicReminder(day, time, desc) {
+    const data = { day, time, desc };
+    
+    fetch("http://127.0.0.1:8000/academic/", {
+        method: "DELETE",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(data)
+    })
+    .then(response => {
+        if (response.ok) {
+            console.log("Academic reminder removed successfully");
+            fetchAcademicReminders(); // Listeyi güncelle
+            removeEventFromCalendar(day, time, desc); // Takvimden sil
+        } else {
+            return response.json().then(err => {
+                throw new Error(err.detail);
+            });
+        }
+    })
+    .catch(error => {
+        console.error("Error removing academic reminder:", error);
+    });
+}
+
+// Genel bir hatırlatıcıyı sil
+function removeGeneralReminder(day, time, desc) {
+    const data = { day, time, desc };
+    
+    fetch("http://127.0.0.1:8000/general/", {
+        method: "DELETE",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(data)
+    })
+    .then(response => {
+        if (response.ok) {
+            console.log("General reminder removed successfully");
+            fetchGeneralReminders(); // Listeyi güncelle
+            removeEventFromCalendar(day, time, desc); // Takvimden sil
+        } else {
+            return response.json().then(err => {
+                throw new Error(err.detail);
+            });
+        }
+    })
+    .catch(error => {
+        console.error("Error removing general reminder:", error);
+    });
+}
+
+// Spor bir hatırlatıcıyı sil
+function removeSportsReminder(day, time, type) {
+    const data = { day, time, type };
+    
+    fetch("http://127.0.0.1:8000/sports/", {
+        method: "DELETE",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(data)
+    })
+    .then(response => {
+        if (response.ok) {
+            console.log("Sports reminder removed successfully");
+            fetchSportsReminders(); // Listeyi güncelle
+            removeEventFromCalendar(day, time, type); // Takvimden sil
+        } else {
+            return response.json().then(err => {
+                throw new Error(err.detail);
+            });
+        }
+    })
+    .catch(error => {
+        console.error("Error removing sports reminder:", error);
+    });
+}
+
+
+
+
 // Yeni bir akademik hatırlatıcı ekle
 function addAcademicReminder(day, time, duration, desc) {
     const data = {
@@ -396,14 +481,29 @@ function renderCalendar() {
             // Çarpı simgesini etkinlik üzerine ekleyelim
             const deleteIcon = document.createElement('span');
             deleteIcon.classList.add('delete-icon');
-            deleteIcon.innerHTML = '×';  // Çarpı işareti
+            deleteIcon.innerHTML = '×'; // Çarpı işareti
             info.el.appendChild(deleteIcon);
 
             // Çarpı simgesine tıklandığında etkinliği silme işlemi
             deleteIcon.addEventListener('click', function(e) {
-                e.stopPropagation();  // Çarpıya tıklanınca eventClick işlevini tetiklemesin
-                eventToDelete = info.event; // Silinecek etkinliği kaydet
-                deleteModal.style.display = 'flex';  // Modal'ı göster
+                e.stopPropagation(); // Çarpıya tıklanınca eventClick işlevini tetiklemesin
+                const confirmDelete = confirm(`Are you sure you want to delete "${info.event.title}"?`);
+                if (confirmDelete) {
+                    const [day, time] = info.event.startStr.split('T');
+                    const desc = info.event.title;
+
+                    // Kategoriye göre backend'e silme isteği gönder
+                    if (category === 'academic') {
+                        removeAcademicReminder(day, time, desc);
+                    } else if (category === 'general') {
+                        removeGeneralReminder(day, time, desc);
+                    } else if (category === 'sports') {
+                        removeSportsReminder(day, time, desc);
+                    }
+
+                    // Takvimden etkinliği sil
+                    info.event.remove();
+                }
             });
         }
     });
