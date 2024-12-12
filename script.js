@@ -15,7 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const formData = new FormData(form); // Form verilerini al
             const formId = form.id; // Formun id'sini al
 
-            // Veriyi uygun listeye ve takvime ekle
+            // Veriyi uygun API'ye ve listeye ekle
             switch (formId) {
                 case 'sports-reminder-form':
                     handleSportsForm(formData);
@@ -29,21 +29,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 case 'quiz-exam-form':
                     handleQuizExamForm(formData);
                     break;
-                case 'fitness-goal-form':
-                    handleFitnessGoalForm(formData);
-                    break;
-                case 'fitness-progress-form':
-                    handleFitnessProgressForm(formData);
-                    break;
-                case 'calorie-form':
-                    handleCalorieForm(formData);
-                    break;
-                case 'study-session-form':
-                    handleStudySessionForm(formData);
-                    break;
-                case 'assignment-form':
-                    handleAssignmentForm(formData);
-                    break;
                 default:
                     console.error(`Unknown form ID: ${formId}`);
             }
@@ -52,8 +37,164 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
+    // Sayfa yüklendiğinde hatırlatıcıları getir
+    fetchAcademicReminders();
+    fetchGeneralReminders();
+    fetchSportsReminders();
+
     renderCalendar();
 });
+
+// Yeni bir akademik hatırlatıcı ekle
+function addAcademicReminder(day, time, duration, desc) {
+    const data = {
+        day: day,
+        time: time,
+        duration: duration,
+        desc: desc
+    };
+
+    fetch("http://127.0.0.1:8000/academic/", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(data)
+    })
+    .then(response => {
+        if (response.ok) {
+            console.log("Academic reminder added successfully");
+            fetchAcademicReminders(); // Listeyi güncelle
+        } else {
+            return response.json().then(err => {
+                throw new Error(err.detail);
+            });
+        }
+    })
+    .catch(error => {
+        console.error("Error adding academic reminder:", error);
+    });
+}
+
+// Yeni bir genel hatırlatıcı ekle
+function addGeneralReminder(day, time, duration, desc) {
+    const data = {
+        day: day,
+        time: time,
+        duration: duration,
+        desc: desc
+    };
+
+    fetch("http://127.0.0.1:8000/general/", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(data)
+    })
+    .then(response => {
+        if (response.ok) {
+            console.log("General reminder added successfully");
+            fetchGeneralReminders(); // Listeyi güncelle
+        } else {
+            return response.json().then(err => {
+                throw new Error(err.detail);
+            });
+        }
+    })
+    .catch(error => {
+        console.error("Error adding general reminder:", error);
+    });
+}
+
+// Yeni bir spor hatırlatıcı ekle
+function addSportsReminder(day, time, duration, desc) {
+    const data = {
+        day: day,
+        time: time,
+        duration: duration,
+        desc: desc
+    };
+
+    fetch("http://127.0.0.1:8000/sports/", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(data)
+    })
+    .then(response => {
+        if (response.ok) {
+            console.log("Sports reminder added successfully");
+            fetchSportsReminders(); // Listeyi güncelle
+        } else {
+            return response.json().then(err => {
+                throw new Error(err.detail);
+            });
+        }
+    })
+    .catch(error => {
+        console.error("Error adding sports reminder:", error);
+    });
+}
+
+// API'den tüm akademik hatırlatıcıları al
+function fetchAcademicReminders() {
+    fetch("http://127.0.0.1:8000/academic/")
+        .then(response => response.json())
+        .then(data => {
+            const list = document.getElementById('academic-list');
+            list.innerHTML = ""; // Önce listeyi temizle
+            data.academic_reminders.forEach(reminder => {
+                const listItem = document.createElement('li');
+                listItem.textContent = `Day: ${reminder[0]}, Time: ${reminder[1]}, Duration: ${reminder[2]}, Desc: ${reminder[3]}`;
+                list.appendChild(listItem);
+            });
+        })
+        .catch(error => {
+            console.error("Error fetching academic reminders:", error);
+        });
+}
+
+// API'den genel hatırlatıcıları al
+function fetchGeneralReminders() {
+    fetch("http://127.0.0.1:8000/general/")
+        .then(response => response.json())
+        .then(data => {
+            const list = document.getElementById('general-container');
+            list.innerHTML = ""; // Önce listeyi temizle
+            data.general_reminders.forEach(reminder => {
+                const listItem = document.createElement('li');
+                listItem.textContent = `Day: ${reminder[0]}, Time: ${reminder[1]}, Duration: ${reminder[2]}, Desc: ${reminder[3]}`;
+                list.appendChild(listItem);
+            });
+        })
+        .catch(error => {
+            console.error("Error fetching general reminders:", error);
+        });
+}
+
+// API'den spor hatırlatıcıları al
+function fetchSportsReminders() {
+    fetch("http://127.0.0.1:8000/sports/")
+        .then(response => response.json())
+        .then(data => {
+            const list = document.getElementById('sports-reminders-list');
+            list.innerHTML = ""; // Önce listeyi temizle
+            data.sports_reminders.forEach(reminder => {
+                const listItem = document.createElement('li');
+                listItem.textContent = `Day: ${reminder[0]}, Time: ${reminder[1]}, Duration: ${reminder[2]}, Desc: ${reminder[3]}`;
+                list.appendChild(listItem);
+            });
+        })
+        .catch(error => {
+            console.error("Error fetching sports reminders:", error);
+        });
+}
+
+
+
+
 
 function handleSportsForm(formData) {
     const list = document.getElementById('sports-reminders-list');
