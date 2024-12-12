@@ -2,36 +2,36 @@ import sqlite3
 
 PATH = '/home/kerem/codes/481/database/files/remindall.db'
 
-def addAcademic(day : str, time : str, dur: str, type : str, name : str) -> bool:
+def addAcademic(day : str, st : str, et: str, type : str, name : str) -> bool:
     connection = sqlite3.connect(PATH)
     cursor = connection.cursor()
-    row = (day, time, dur, type, name)
+    row = (day, st, et, type, name)
     try:
-        cursor.execute('INSERT INTO academic (day, time, duration, type, desc) VALUES (?, ?, ?, ?, ?)', tuple(row))
+        cursor.execute('INSERT INTO academic (day, start_time, end_time, type, desc) VALUES (?, ?, ?, ?, ?)', tuple(row))
         connection.commit()
         connection.close()
         return True
     except:
         return False
     
-def addGeneral(day : str, time : str, dur: str, name : str) -> bool:
+def addGeneral(day : str, st : str, et: str, name : str) -> bool:
     connection = sqlite3.connect(PATH)
     cursor = connection.cursor()
-    row = (day, time, dur, name)
+    row = (day, st, et, name)
     try:
-        cursor.execute('INSERT INTO general (day, time, duration, desc) VALUES (?, ?, ?, ?)', tuple(row))
+        cursor.execute('INSERT INTO general (day, start_time, end_time, desc) VALUES (?, ?, ?, ?)', tuple(row))
         connection.commit()
         connection.close()
         return True
     except:
         return False
     
-def addSports(day : str, time : str, dur: str, type : str, name : str) -> bool:
+def addSports(day : str, st : str, et: str, type : str, name : str) -> bool:
     connection = sqlite3.connect(PATH)
     cursor = connection.cursor()
-    row = (day, time, dur, type, name)
+    row = (day, st, et, type, name)
     try:
-        cursor.execute('INSERT INTO sports (day, time, duration, desc) VALUES (?, ?, ?, ?, ?)', tuple(row))
+        cursor.execute('INSERT INTO sports (day, start_time, end_time, type, desc) VALUES (?, ?, ?, ?, ?)', tuple(row))
         connection.commit()
         connection.close()
         return True
