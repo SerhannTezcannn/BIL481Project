@@ -672,15 +672,14 @@ function removeAcademicReminder(day, time, desc) {
 }
 
 // Genel bir hatırlatıcıyı sil
-function removeGeneralReminder(day, time) {
-    const data = { day, time};
-    
-    fetch("http://127.0.0.1:8000/general/", {
+function removeGeneralReminder(day, time, desc) {
+    const url = `http://127.0.0.1:8000/general/?day=${day}&time=${time}&desc=${desc}`;
+
+    fetch(url, {
         method: "DELETE",
         headers: {
             "Content-Type": "application/json"
-        },
-        body: JSON.stringify(data)
+        }
     })
     .then(response => {
         if (response.ok) {
@@ -697,6 +696,7 @@ function removeGeneralReminder(day, time) {
         console.error("Error removing general reminder:", error);
     });
 }
+
 
 // Spor bir hatırlatıcıyı sil
 function removeSportsReminder(day, time, type) {
