@@ -1,3 +1,4 @@
+#these are obsolete and will not work, look at the code for proper inputs of these functions
 from database.db_connections import * 
 
 print(addAcademic("Monday", "16.30", "120", "Exam"))
