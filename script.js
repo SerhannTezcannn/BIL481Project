@@ -47,11 +47,12 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // Yeni bir akademik hatırlatıcı ekle
-function addAcademicReminder(day, time, duration, desc) {
+function addAcademicReminder(day, start_time, end_time, type, desc) {
     const data = {
         day: day,
-        time: time,
-        duration: duration,
+        start_time: start_time,
+        end_time: end_time,
+        type: type,
         desc: desc
     };
 

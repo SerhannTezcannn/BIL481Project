@@ -14,7 +14,7 @@ class Reminder(BaseModel):
 # Academic Endpoints
 @app.post("/academic/")
 def add_academic(reminder: Reminder):
-    success = addAcademic(reminder.day, reminder.time, reminder.duration, reminder.desc)
+    success = addAcademic(reminder.day, reminder.start_time, reminder.end_time, reminder.type, reminder.desc)
     if success:
         return {"message": "Academic reminder added successfully"}
     else:
