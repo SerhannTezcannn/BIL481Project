@@ -120,7 +120,7 @@
             <textarea name="note" placeholder="Enter reminder note" required></textarea>
             <button type="submit">Add Reminder</button>
         </form>
-        <ul class="general-container"></ul>
+        <ul id="general-container"></ul>  
     </div>
 
         <!-- All-in-One Tab -->
@@ -129,10 +129,26 @@
         <div id="calendar"></div>
     </div>
 
+    <!-- Silme Modal'ı -->
+    <div id="deleteModal" class="modal">
+        <div class="modal-content">
+            <h4>Are You Sure You Want to Delete This Event?</h4>
+            <p>This event will be permanently deleted and cannot be undone.</p>
+        </div>
+        <div class="modal-footer">
+            <button id="cancelDelete" class="btn">Cancel</button>
+            <button id="confirmDelete" class="btn">Delete</button>
+        </div>
+    </div>
+
+
     <!-- External JavaScript File -->
     <script src="script.js"></script>
 
     <!-- FullCalendar JS -->
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
 </body>
+
+
+
 </html>

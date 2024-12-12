@@ -10,10 +10,12 @@ body {
 
 /* Başlık */
 h1 {
-    color: #0078D7;
     margin: 30px 0;
     font-size: 36px;
     text-shadow: 0 2px 5px rgba(0, 120, 215, 0.3);
+    font-weight: 600;
+    margin-bottom: 20px;
+    color: #333;
 }
 
 /* Sekme Butonları */
@@ -22,7 +24,11 @@ h1 {
     justify-content: center;
     margin-top: 20px;
     gap: 20px;
+    background-color: #f1f1f1;
+    padding: 20px 0;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
+
 #tabs button {
     padding: 14px 28px;
     font-size: 18px;
@@ -50,6 +56,7 @@ h1 {
     transform: scale(1.1);
     box-shadow: 0 4px 12px rgba(0, 120, 215, 0.3);
 }
+
 /* Tab İçeriği */
 .tab-content {
     visibility: hidden;
@@ -224,13 +231,7 @@ ul li {
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
 }
 
-/* Sekme Bölümleri */
-.sports-container, .academic-container, .general-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 30px;
-}
+
 
 /* Güncellenmiş Tab Başlıkları */
 section h3 {
@@ -240,12 +241,7 @@ section h3 {
     font-weight: bold;
 }
 
-/* Üst Bilgi Alanı */
-#tabs {
-    background-color: #f1f1f1;
-    padding: 20px 0;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-}
+
 
 /* Yanıtlar için Duyurular */
 p {
@@ -281,30 +277,6 @@ p {
     background-color: #e3f2fd;
 }
 
-
-/* Sports, Academic, General Sekmeleri */
-.sports-container li, .academic-container li, .general-container li {
-    background-color: #fff8e1;
-    padding: 14px;
-    border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    margin-bottom: 12px;
-}
-
-.sports-container li:hover, .academic-container li:hover, .general-container li:hover {
-    background-color: #ffe082;
-    transform: translateY(-2px);
-}
-
-
-/* Aktif buton rengi */
-#tabs button.active {
-    background-color: #0078D7;
-    color: white;
-    border-color: #005ba1;
-    transform: scale(1.1);
-    box-shadow: 0 4px 15px rgba(0, 120, 215, 0.3);
-}
 /* Basic reset */
 * {
     margin: 0;
@@ -324,12 +296,7 @@ p {
     box-shadow: 0 12px 30px rgba(0, 0, 0, 0.1);
 }
 
-h1 {
-    font-size: 36px;
-    font-weight: 600;
-    margin-bottom: 20px;
-    color: #333;
-}
+
 
 /* FullCalendar styles */
 #calendar {
@@ -535,26 +502,18 @@ h1 {
     -moz-appearance: none; /* Firefox için */
     padding: 10px 15px;
     font-size: 16px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    background-color: #f9f9f9;
-    color: #333;
     cursor: pointer;
     transition: all 0.3s ease;
-}
-
-#type {
     background-color: #ffffff;
     background-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>');
     background-repeat: no-repeat;
-    background-position: right 15px center;
+    background-position: right 10px center;
     background-size: 20px;
     border: 1px solid #0078D7;
     color: #333;
     padding: 10px 15px;
     border-radius: 8px;
 }
-
 
 /* Hover efekti */
 #type:hover {
@@ -574,4 +533,84 @@ h1 {
     background-repeat: no-repeat;
     background-position: right 10px center;
     background-size: 20px;
+}
+
+/* Etkinlik üzerine gelindiğinde görünür olacak çarpı simgesi */
+.fc-event {
+    position: relative;
+    cursor: pointer;
+}
+
+.fc-event .delete-icon {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    font-size: 24px;
+    color: red;
+    cursor: pointer;
+    display: none; /* Başlangıçta gizli */
+}
+
+/* Etkinlik üzerine gelindiğinde çarpı simgesini göster */
+.fc-event:hover .delete-icon {
+    display: block;
+}
+
+/* Modal stili */
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    display: none; /* Modal başlangıçta gizli */
+}
+
+/* Modal içerik */
+.modal-content {
+    background: white;
+    padding: 20px;
+    border-radius: 5px;
+    width: 300px;
+}
+
+/* Modal butonları */
+.modal-footer {
+    position: absolute; /* Kesin bir pozisyon belirlemek için */
+    bottom: 30%; /* Modal'ın altından %30 yukarıda */
+    left: 50%; /* Sol kenardan %50'ye hizala */
+    transform: translateX(-50%); /* Yatay eksende tam ortala */
+    display: flex;
+    flex-direction: row; /* Butonları yatayda hizala */
+    justify-content: center; /* Butonları ortala */
+    gap: 10px; /* Butonlar arasında boşluk */
+}
+
+/* Butonlar */
+button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    font-size: 14px;
+    cursor: pointer;
+    background-color: #ff4d4d; /* Silme butonu kırmızı */
+    color: white;
+    transition: background-color 0.3s, transform 0.2s;
+}
+
+#cancelDelete {
+    background-color: #d3d3d3; /* İptal butonu gri */
+}
+
+#cancelDelete:hover {
+    background-color: #b3b3b3;
+}
+
+button:hover {
+    background-color: #e60000;
+    transform: scale(1.05);
 }

@@ -1,12 +1,12 @@
+let fitnessGoal = 0;
+let currentProgress = 0;
+let calendarInstance = null;
 
 document.addEventListener('DOMContentLoaded', () => {
     console.log("JavaScript is loaded and working!");
 
     // Tüm formları seç
     const forms = document.querySelectorAll('form');
-
-
-    
 
     // Her form için submit event listener ekle
     forms.forEach((form) => {
@@ -47,99 +47,88 @@ document.addEventListener('DOMContentLoaded', () => {
                 default:
                     console.error(`Unknown form ID: ${formId}`);
             }
-            
 
             form.reset(); // Formu sıfırla
         });
     });
 
-    // Varsayılan sekmeyi göster
-    showTab('aio');
     renderCalendar();
 });
 
-
-document.querySelector('#general-form')?.addEventListener('submit', (e) => {
-    e.preventDefault();
-    const date = e.target.date.value;
-    const time = e.target.time.value;
-    const note = e.target.note.value;
-    addGeneralReminder(date, time, note);
-    e.target.reset(); // Formu sıfırlama
-});
-
-function addGeneralReminder(date, time, note) {
-    // Hatırlatma işlemleri burada yapılır
-    console.log(`General reminder added: Date=${date}, Time=${time}, Note=${note}`);
-    
-    // Örneğin, bir listeye ekleme:
-    const list = document.querySelector('.general-container');
-    const listItem = document.createElement('li');
-    listItem.textContent = `Tarih: ${date} | Saat: ${time} | Not: ${note}`;
-    list.appendChild(listItem);
-
-    // Takvime ekleme
-    addEventToCalendar(note, `${date}T${time}`);
-}
-
-
-
-// Spor formunu işle
 function handleSportsForm(formData) {
     const list = document.getElementById('sports-reminders-list');
     const date = formData.get('date');
     const time = formData.get('time');
     const note = formData.get('note');
+
     appendToList(list, `Date: ${date} | Time: ${time} | Note: ${note}`);
-    const start = `${date}T${time}`; // ISO 8601 formatında tarih ve saat
-    addEventToCalendar(note, start); // Takvim için veri gönder
+
+    const start = `${date}T${time}`; 
+    addEventToCalendar(note, start, 'sports'); 
 }
 
-// Akademik formu işle
 function handleAcademicForm(formData) {
     const list = document.getElementById('academic-list');
     const date = formData.get('date');
     const time = formData.get('time');
     const note = formData.get('note');
+
     appendToList(list, `Date: ${date} | Time: ${time} | Note: ${note}`);
-    const start = `${date}T${time}`; // ISO 8601 formatında tarih ve saat
-    addEventToCalendar(note, start); // Takvim için veri gönder
+
+    const start = `${date}T${time}`;
+    addEventToCalendar(note, start, 'academic'); 
 }
 
 function handleGeneralForm(formData) {
-    const generalContainer = document.querySelector('.general-container');
-
-    // Yeni liste öğesi oluştur
-    const listItem = document.createElement('li');
+    const list = document.getElementById('general-container');
     const date = formData.get('date');
     const time = formData.get('time');
     const note = formData.get('note');
-    
 
-    // Takvime ekle
-    const start = `${date}T${time}`; // ISO 8601 formatında tarih ve saat
-    addEventToCalendar(note, start); // Takvim için veri gönder
+    appendToList(list, `Date: ${date} | Time: ${time} | Note: ${note}`);
+
+    const start = `${date}T${time}`; 
+    addEventToCalendar(note, start, 'general'); 
 }
 
-// Quiz/Exam formunu işle
 function handleQuizExamForm(formData) {
     const list = document.getElementById('quiz-exam-list');
     const date = formData.get('date');
     const time = formData.get('time');
     const subject = formData.get('subject');
     const type = formData.get('type');
-    
-    // Listeye ekleme
+
     appendToList(list, `Date: ${date} | Time: ${time} | Subject: ${subject} (${type})`);
-    
-    // Takvim için uygun açıklama oluşturma
-    const note = `${type.toUpperCase()}: ${subject}`; // Örnek: "QUIZ: Mathematics"
-    const start = `${date}T${time}`; // ISO 8601 formatında tarih ve saat
-    
-    // Takvim için veri gönder
-    addEventToCalendar(note, start);
+
+    const note = `${type.toUpperCase()}: ${subject}`;
+    const start = `${date}T${time}`;
+
+    addEventToCalendar(note, start, 'academic');
 }
 
+function handleStudySessionForm(formData) {
+    const list = document.getElementById('study-session-list');
+    const date = formData.get('date');
+    const time = formData.get('time');
+    const subject = formData.get('subject');
+
+    appendToList(list, `Date: ${date} | Time: ${time} | Subject: ${subject}`);
+
+    const start = `${date}T${time}`;
+    addEventToCalendar(`Study: ${subject}`, start, 'academic');
+}
+
+function handleAssignmentForm(formData) {
+    const list = document.getElementById('assignment-list');
+    const dueDate = formData.get('due-date');
+    const title = formData.get('title');
+    const details = formData.get('details');
+
+    appendToList(list, `Due: ${dueDate} | Title: ${title} | Details: ${details}`);
+
+    const start = `${dueDate}T00:00`;
+    addEventToCalendar(`Assignment: ${title}`, start, 'academic');
+}
 
 function updateProgressBar() {
     const progressBar = document.getElementById('progress-bar');
@@ -159,53 +148,43 @@ function addFitnessProgress(date, reps, notes) {
     listItem.textContent = `Date: ${date} | Reps: ${reps} | Notes: ${notes || 'N/A'}`;
     fitnessProgressList.appendChild(listItem);
 }
-function handleFitnessGoalForm(formData) {
-    const goal = formData.get('goal'); // Hedef değerini al
-    const goalDisplay = document.getElementById('goal-display'); 
-    const progressBar = document.getElementById('progress-bar');
-    
-    goalDisplay.textContent = `Goal: ${goal} reps`;
-    progressBar.style.width = "0%";
-    progressBar.textContent = "0%";
-}
+
 function handleCalorieForm(formData) {
     const list = document.getElementById('calorie-list');
     const totalCalories = document.getElementById('total-calories');
     const food = formData.get('food');
     const calories = parseInt(formData.get('calories'), 10);
-    
+
     appendToList(list, `${food}: ${calories} kcal`);
-    
-    // Toplam kaloriyi güncelle
+
     const currentTotal = parseInt(totalCalories.textContent.replace(/\D/g, ''), 10) || 0;
     totalCalories.textContent = `Total Calories: ${currentTotal + calories}`;
 }
-function handleStudySessionForm(formData) {
-    const list = document.getElementById('study-session-form');
+
+function handleFitnessGoalForm(formData) {
+    const goal = formData.get('goal'); 
+    fitnessGoal = parseInt(goal, 10);
+    currentProgress = 0; 
+
+    const goalDisplay = document.getElementById('goal-display'); 
+    goalDisplay.textContent = `Goal: ${fitnessGoal} reps`; 
+
+    const progressBar = document.getElementById('progress-bar');
+    progressBar.style.width = "0%";
+    progressBar.textContent = "0%"; 
+
+    updateProgressBar(); 
+}
+
+function handleFitnessProgressForm(formData) {
     const date = formData.get('date');
-    const time = formData.get('time');
-    const subject = formData.get('subject');
-    
-    appendToList(list, `Date: ${date} | Time: ${time} | Subject: ${subject}`);
-    
-    const start = `${date}T${time}`;
-    addEventToCalendar(`Study: ${subject}`, start);
-}
-function handleAssignmentForm(formData) {
-    const list = document.getElementById('assignment-form');
-    const dueDate = formData.get('due-date');
-    const title = formData.get('title');
-    const details = formData.get('details');
-    
-    appendToList(list, `Due: ${dueDate} | Title: ${title} | Details: ${details}`);
-    
-    const start = `${dueDate}T00:00`; // Ödevler için yalnızca tarih bilgisi
-    addEventToCalendar(`Assignment: ${title}`, start);
+    const reps = parseInt(formData.get('reps'), 10);
+    const notes = formData.get('notes');
+    currentProgress += reps;
+    addFitnessProgress(date, reps, notes);
+    updateProgressBar();
 }
 
-
-
-// Listeye veri ekle
 function appendToList(list, content) {
     if (list) {
         const listItem = document.createElement('li');
@@ -216,23 +195,21 @@ function appendToList(list, content) {
     }
 }
 
-
-function addEventToCalendar(title, start) {
+function addEventToCalendar(title, start, category) {
     if (calendarInstance) {
         calendarInstance.addEvent({
             title,
             start,
-            color: '#FF5733' // Kategoriye göre özelleştirilebilir
+            extendedProps: {
+                category
+            }
         });
     } else {
         console.error('Calendar instance not initialized.');
     }
 }
 
-
-
-// Takvimi başlatma
-let calendarInstance = null;
+let eventToDelete = null;  // Silinecek etkinlik
 
 function renderCalendar() {
     const calendarEl = document.getElementById('calendar');
@@ -248,19 +225,82 @@ function renderCalendar() {
             center: 'title',
             right: 'dayGridMonth,timeGridWeek,timeGridDay'
         },
-        events: [], // Başlangıçta boş; dinamik olarak doldurulacak
-        eventColor: '#378006'
+        events: [
+            {
+                title: 'Meeting with John',
+                start: '2024-12-15T10:00:00',
+                end: '2024-12-15T12:00:00',
+                category: 'academic',  // You can set the category as needed
+            },
+            {
+                title: 'Yoga Class',
+                start: '2024-12-16T08:00:00',
+                end: '2024-12-16T09:00:00',
+                category: 'sports',  // You can set the category as needed
+            }
+        ]
+,        
+        editable: true,  // Etkinlikleri taşımayı aktif hale getirir
+        eventDidMount: function(info) {
+            const category = info.event.extendedProps.category;
+            // Kategorilere göre renk belirleme
+            if (category === 'academic') {
+                info.el.style.backgroundColor = '#0078D7';
+            } else if (category === 'sports') {
+                info.el.style.backgroundColor = '#FF5733';
+            } else if (category === 'general') {
+                info.el.style.backgroundColor = '#378006';
+            }
+
+            // Çarpı simgesini etkinlik üzerine ekleyelim
+            const deleteIcon = document.createElement('span');
+            deleteIcon.classList.add('delete-icon');
+            deleteIcon.innerHTML = '×';  // Çarpı işareti
+            info.el.appendChild(deleteIcon);
+
+            // Çarpı simgesine tıklandığında etkinliği silme işlemi
+            deleteIcon.addEventListener('click', function(e) {
+                e.stopPropagation();  // Çarpıya tıklanınca eventClick işlevini tetiklemesin
+                eventToDelete = info.event; // Silinecek etkinliği kaydet
+                deleteModal.style.display = 'flex';  // Modal'ı göster
+            });
+        }
     });
 
     calendarInstance.render();
+
+    // Modal öğeleri
+    const deleteModal = document.getElementById('deleteModal');
+    const cancelDelete = document.getElementById('cancelDelete');
+    const confirmDelete = document.getElementById('confirmDelete');
+
+    // Silme butonuna tıklanırsa, etkinliği takvimden sil
+    confirmDelete.onclick = function() {
+        if (eventToDelete) {
+            eventToDelete.remove();  // Etkinliği takvimden sil
+            deleteModal.style.display = 'none';  // Modal'ı kapat
+        }
+    };
+
+    // İptal butonuna tıklanırsa, modal'ı kapat
+    cancelDelete.onclick = function() {
+        deleteModal.style.display = 'none';
+    };
+
+    // Modal dışına tıklanırsa, modal'ı kapat
+    window.onclick = function(event) {
+        if (event.target === deleteModal) {
+            deleteModal.style.display = 'none';
+        }
+    };
 }
 
-// Sekmeleri yönet
+
+
 function showTab(tabName) {
     const tabs = document.querySelectorAll('.tab-content');
     const buttons = document.querySelectorAll('#tabs button');
 
-  
     tabs.forEach(tab => {
         tab.style.visibility = 'hidden'; 
         tab.style.height = '0'; 
@@ -268,7 +308,6 @@ function showTab(tabName) {
         tab.style.transform = 'translateY(10px)'; 
     });
 
-    
     buttons.forEach(button => {
         button.classList.remove('active');
     });
@@ -294,7 +333,6 @@ function showTab(tabName) {
     }
 }
 
-
 function showNestedTab(nestedTabName) {
     const nestedTabs = document.querySelectorAll('.nested-tab-content');
     nestedTabs.forEach(tab => {
@@ -305,7 +343,6 @@ function showNestedTab(nestedTabName) {
         }
     });
 
-
     const buttons = document.querySelectorAll('#sports-tabs button, #academic-tabs button');
     buttons.forEach(button => {
         if (button.innerText.toLowerCase().replace(/\s+/g, '-') === nestedTabName) {
@@ -315,37 +352,4 @@ function showNestedTab(nestedTabName) {
         }
     });
 }
-
-document.addEventListener("DOMContentLoaded", function() {
-    showTab('aio');
-    showNestedTab('daily-reminders'); 
-    renderCalendar();
-});
-
-
-
-let fitnessGoal = 0;
-let currentProgress = 0;
-
-document.querySelector('#fitness-goal-form')?.addEventListener('submit', (e) => {
-    e.preventDefault();
-    const goalInput = document.getElementById('goal');
-    fitnessGoal = parseInt(goalInput.value, 10);
-    currentProgress = 0; // Reset progress when goal is updated
-    updateProgressBar();
-    document.getElementById('goal-display').textContent = `Goal: ${fitnessGoal} reps`;
-    goalInput.value = '';
-});
-
-
-document.querySelector('#fitness-progress-form')?.addEventListener('submit', (e) => {
-    e.preventDefault();
-    const date = e.target.date.value;
-    const reps = parseInt(e.target.reps.value, 10);
-    const notes = e.target.notes.value;
-    currentProgress += reps; 
-    addFitnessProgress(date, reps, notes);
-    updateProgressBar();
-    e.target.reset();
-});
 
