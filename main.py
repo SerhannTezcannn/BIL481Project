@@ -57,7 +57,7 @@ def get_general():
 
 @app.delete("/general/")
 def delete_general(reminder: Reminder):
-    success = removeGeneral(reminder.day, reminder.time)
+    success = removeGeneral(reminder.day, reminder.start_time, reminder.desc)
     if success:
         return {"message": "General reminder deleted successfully"}
     else:
@@ -66,7 +66,7 @@ def delete_general(reminder: Reminder):
 # Sports Endpoints
 @app.post("/sports/")
 def add_sports(reminder: Reminder):
-    success = addSports(reminder.day, reminder.time, reminder.duration, reminder.desc)
+    success = addSports(reminder.day, reminder.start_time, reminder.end_time, reminder.type, reminder.desc)
     if success:
         return {"message": "Sports reminder added successfully"}
     else:
@@ -82,7 +82,7 @@ def get_sports():
 
 @app.delete("/sports/")
 def delete_sports(reminder: Reminder):
-    success = removeSports(reminder.day, reminder.time)
+    success = removeSports(reminder.day, reminder.start_time, reminder.desc)
     if success:
         return {"message": "Sports reminder deleted successfully"}
     else:

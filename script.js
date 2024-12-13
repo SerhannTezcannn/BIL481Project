@@ -17,7 +17,6 @@ document.addEventListener('DOMContentLoaded', () => {
         calorieDropdown.innerHTML = "<option value=\"\" disabled selected>Choose a food item</option>";
         
         data.forEach(item => {
-            console.log(item)
             const option = document.createElement("option");
             option.value = JSON.stringify(item); // Öğeyi JSON formatında sakla
             option.textContent = `${item.item} (${item.amount}) - ${item.calorie} cal`; // Görünen metin
@@ -112,7 +111,7 @@ function addAcademicReminder(day, start_time, end_time, desc, type) {
     .then(response => {
         if (response.ok) {
             console.log("Academic reminder added successfully");
-            fetchAcademicReminders(); // Listeyi güncelle
+            //fetchAcademicReminders(); // Listeyi güncelle
         } else {
             return response.json().then(err => {
                 throw new Error(err.detail);
@@ -144,7 +143,7 @@ function addGeneralReminder(day, start_time, end_time, desc) {
     .then(response => {
         if (response.ok) {
             console.log("General reminder added successfully");
-            fetchGeneralReminders(); // Listeyi güncelle
+            //fetchGeneralReminders(); // Listeyi güncelle
         } else {
             return response.json().then(err => {
                 throw new Error(err.detail);
@@ -157,12 +156,13 @@ function addGeneralReminder(day, start_time, end_time, desc) {
 }
 
 // Yeni bir spor hatırlatıcı ekle
-function addSportsReminder(day, time, duration, desc) {
+function addSportsReminder(day, start_time, end_time, desc) {
     const data = {
         day: day,
-        time: time,
-        duration: duration,
-        desc: desc
+        start_time: start_time,
+        end_time: end_time,
+        desc: desc,
+        type: ""
     };
 
     fetch("http://127.0.0.1:8000/sports/", {
@@ -175,7 +175,7 @@ function addSportsReminder(day, time, duration, desc) {
     .then(response => {
         if (response.ok) {
             console.log("Sports reminder added successfully");
-            fetchSportsReminders(); // Listeyi güncelle
+            //fetchSportsReminders(); // Listeyi güncelle
         } else {
             return response.json().then(err => {
                 throw new Error(err.detail);
@@ -193,7 +193,7 @@ function fetchAcademicReminders() {
         .then(response => response.json())
         .then(data => {
             const list = document.getElementById('academic-list');
-            list.innerHTML = ""; // Önce listeyi temizle
+            list.innerHTML = "";
             data.academic_reminders.forEach(reminder => {
                 const listItem = document.createElement('li');
                 listItem.textContent = `Date: ${reminder[1]} | Start Time: ${reminder[2]} | End Time: ${reminder[3]} | Note: ${reminder[4]} | Type: ${reminder[4]}`;
@@ -245,7 +245,7 @@ function fetchSportsReminders() {
 
                 // Takvime ekle
                 const start = `${reminder[1]}T${reminder[2]}`;
-                addEventToCalendar(reminder[4], start, 'general');
+                addEventToCalendar(reminder[4], start, 'sports');
             });
         })
         .catch(error => {
@@ -255,25 +255,24 @@ function fetchSportsReminders() {
 
 
 function handleSportsForm(formData) {
-    const list = document.getElementById('daily-sports-session-list');
+    const list = document.getElementById('sports-reminders-list');
     const date = formData.get('date');
     const startTime = formData.get('start-time');
     const endTime = formData.get('end-time');
-    const activity = formData.get('activity');
+    const desc = formData.get('desc');
 
     // Debugging logs to verify data received
-    console.log("Form data received:", { date, startTime, endTime, activity });
 
-    appendToList(list, `Date: ${date} | Start Time: ${startTime} | End Time: ${endTime} | Activity: ${activity}`);
+    appendToList(list, `Date: ${date} | Start Time: ${startTime} | End Time: ${endTime} | Note: ${desc}`);
 
     const start = `${date}T${startTime}`;
     const end = `${date}T${endTime}`;
 
     // Ensure the date and time formats are correct
-    console.log("Adding to calendar:", { title: `Sports: ${activity}`, start, end });
+    console.log("Adding to calendar:", { title: `Sports: ${desc}`, start, end });
 
-    // Add to calendar only
-    addEventToCalendarDuration(`Sports: ${activity}`, start, end, 'sports');
+    addSportsReminder(String(date), String(startTime), String(endTime), String(desc))
+    addEventToCalendarDuration(`Sports: ${desc}`, start, end, 'sports');
 }
 
 function handleAcademicForm(formData) {
@@ -288,8 +287,8 @@ function handleAcademicForm(formData) {
 
     const start = `${date}T${start_time}`;
     const end = `${date}T${end_time}`;
-    addAcademicReminder(String(date), String(start_time), String(end_time), String(desc), String(type))
     addEventToCalendarDuration(desc, start, end, type);
+    addAcademicReminder(String(date), String(start_time), String(end_time), String(desc), String(type))
 }
 
 function handleGeneralForm(formData) {
@@ -325,22 +324,6 @@ function parseEndTime(startTime, duration) {
     const durationHours = parseInt(duration.match(/\d+/)[0], 10);
     const endHours = (hours + durationHours) % 24;
     return `${String(endHours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`;
-}
-
-function handleDailySportsSessionForm(formData) {
-    const list = document.getElementById('daily-sports-session-list');
-    const date = formData.get('date');
-    const startTime = formData.get('start-time');
-    const endTime = formData.get('end-time');
-    const activity = formData.get('activity');
-
-    appendToList(list, `Date: ${date} | Start Time: ${startTime} | End Time: ${endTime} | Activity: ${activity}`);
-
-    const start = `${date}T${startTime}`;
-    const end = `${date}T${endTime}`;
-
-    // Add to calendar only
-    addEventToCalendarDuration(`Sports: ${activity}`, start, end, 'sports');
 }
 
 function updateProgressBar() {
@@ -437,20 +420,7 @@ function renderCalendar() {
             center: 'title',
             right: 'dayGridMonth,timeGridWeek,timeGridDay'
         },
-        events: [
-            {
-                title: 'Meeting with John',
-                start: '2024-12-15T10:00:00',
-                end: '2024-12-15T12:00:00',
-                category: 'academic',  // You can set the category as needed
-            },
-            {
-                title: 'Yoga Class',
-                start: '2024-12-16T08:00:00',
-                end: '2024-12-16T09:00:00',
-                category: 'sports',  // You can set the category as needed
-            }
-        ]
+        events: []
 ,        
         editable: true,  // Etkinlikleri taşımayı aktif hale getirir
         eventDidMount: function(info) {
@@ -475,7 +445,7 @@ function renderCalendar() {
 deleteIcon.addEventListener('click', function(e) {
     e.stopPropagation(); // Çarpıya tıklanınca eventClick işlevini tetiklemesin
 
-    const confirmDelete = confirm('Are you sure you want to delete "${info.event.title}"?');
+    const confirmDelete = confirm('Are you sure you want to delete ${info.event.title}?');
     if (confirmDelete) {
         const [day, time] = info.event.startStr.split('T'); // Tarih ve saat bilgisini al
         const desc = info.event.title; // Etkinlik açıklamasını al
@@ -483,11 +453,11 @@ deleteIcon.addEventListener('click', function(e) {
 
         // Kategoriye göre backend'e silme isteği gönder
         if (category === 'academic') {
-            removeAcademicReminder(day, time, desc);
+            removeAcademicReminder(String(day), String(time), String(desc));
         } else if (category === 'general') {
-            removeGeneralReminder(day, time, duration, desc);
+            removeGeneralReminder(String(day), String(time), String(desc));
         } else if (category === 'sports') {
-            removeSportsReminder(day, time, duration, desc);
+            removeSportsReminder(String(day), String(time), String(desc));
         }
 
         // Takvimden etkinliği sil
@@ -498,49 +468,6 @@ deleteIcon.addEventListener('click', function(e) {
     });
 
     calendarInstance.render();
-
-    // Modal öğeleri
-    const deleteModal = document.getElementById('deleteModal');
-    const cancelDelete = document.getElementById('cancelDelete');
-    const confirmDelete = document.getElementById('confirmDelete');
-
-    // Silme butonuna tıklanırsa, etkinliği takvimden sil
-    confirmDelete.onclick = function() {
-        if (eventToDelete) {
-            // Etkinlik bilgilerini al
-            const [day, time] = eventToDelete.startStr.split('T');
-            const desc = eventToDelete.title; // Etkinlik başlığı
-            const duration = eventToDelete.extendedProps.duration; // Etkinlik süresi
-    
-            // Kategoriye göre backend'e silme isteği gönder
-            const category = eventToDelete.extendedProps.category;
-            if (category === 'academic') {
-                removeAcademicReminder(day, time, duration, desc);
-            } else if (category === 'general') {
-                removeGeneralReminder(day, time, duration, desc);
-            } else if (category === 'sports') {
-                removeSportsReminder(day, time, duration, desc);
-            }
-    
-            // Takvimden etkinliği sil
-            eventToDelete.remove();
-    
-            // Modal'ı kapat
-            deleteModal.style.display = 'none';
-        }
-    };
-
-    // İptal butonuna tıklanırsa, modal'ı kapat
-    cancelDelete.onclick = function() {
-        deleteModal.style.display = 'none';
-    };
-
-    // Modal dışına tıklanırsa, modal'ı kapat
-    window.onclick = function(event) {
-        if (event.target === deleteModal) {
-            deleteModal.style.display = 'none';
-        }
-    };
 }
 
 
@@ -624,8 +551,7 @@ function removeAcademicReminder(day, time, desc) {
     .then(response => {
         if (response.ok) {
             console.log("Academic reminder removed successfully");
-            fetchAcademicReminders(); // Listeyi güncelle
-            removeEventFromCalendar(day, time, "", desc);
+            //fetchAcademicReminders(); // Listeyi güncelle
         } else {
             return response.json().then(err => {
                 throw new Error(err.detail);
@@ -641,19 +567,25 @@ function removeAcademicReminder(day, time, desc) {
 // Genel bir hatırlatıcıyı sil
 function removeGeneralReminder(day, time, desc) {
     // URL parametreleri ile direkt isteği oluştur
-    const url = 'http://127.0.0.1:8000/general/?day=${encodeURIComponent(day)}&time=${encodeURIComponent(time)}&desc=${encodeURIComponent(desc)}';
-
-    fetch(url, {
+    const data = {
+        day: day,
+        start_time: time,
+        end_time: "",
+        type: "",
+        desc: desc
+    };
+    
+    fetch("http://127.0.0.1:8000/general/", {
         method: "DELETE",
         headers: {
             "Content-Type": "application/json"
-        }
+        },
+        body: JSON.stringify(data)
     })
     .then(response => {
         if (response.ok) {
             console.log("General reminder removed successfully");
-            fetchGeneralReminders(); // Listeyi güncelle
-            removeEventFromCalendar(day, time); // Takvimden sil
+            //fetchGeneralReminders(); // Listeyi güncelle
         } else {
             return response.json().then(err => {
                 throw new Error(err.detail);
@@ -667,8 +599,14 @@ function removeGeneralReminder(day, time, desc) {
 
 
 // Spor bir hatırlatıcıyı sil
-function removeSportsReminder(day, time, type) {
-    const data = { day, time, type };
+function removeSportsReminder(day, time, desc) {
+    const data = {
+        day: day,
+        start_time: time,
+        end_time: "",
+        type: "",
+        desc: desc
+    };
     
     fetch("http://127.0.0.1:8000/sports/", {
         method: "DELETE",
@@ -680,8 +618,7 @@ function removeSportsReminder(day, time, type) {
     .then(response => {
         if (response.ok) {
             console.log("Sports reminder removed successfully");
-            fetchSportsReminders(); // Listeyi güncelle
-            removeEventFromCalendar(day, time, type); // Takvimden sil
+            //fetchSportsReminders(); // Listeyi güncelle
         } else {
             return response.json().then(err => {
                 throw new Error(err.detail);

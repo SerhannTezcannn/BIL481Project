@@ -73,11 +73,12 @@ def getCalorie():
 def removeAcademic(day : str, time : str, desc : str) -> bool:
     connection = sqlite3.connect(PATH)
     cursor = connection.cursor()
-    row = (day, time, desc)
+    row = (day, time[:5], desc)
     try:
-        cursor.execute('DELETE FROM academic WHERE day = ? AND start_time = ? AND desc = ?', tuple(row))
+        cursor.execute('DELETE FROM academic WHERE day = ? AND start_time = ? AND type = ?', tuple(row))
         connection.commit()
         connection.close()
+        print(getAcademic())
         return True
     except:
         return False
@@ -85,8 +86,9 @@ def removeAcademic(day : str, time : str, desc : str) -> bool:
 def removeGeneral(day : str, time : str, desc : str) -> bool:
     connection = sqlite3.connect(PATH)
     cursor = connection.cursor()
-    row = (day, time, desc)
+    row = (day, time[:5], desc)
     try:
+        print(desc)
         cursor.execute('DELETE FROM general WHERE day = ? AND start_time = ? AND desc = ?', tuple(row))
         connection.commit()
         connection.close()
@@ -94,11 +96,12 @@ def removeGeneral(day : str, time : str, desc : str) -> bool:
     except:
         return False
     
-def removeSports(day : str, time : str, type : str) -> bool:
+def removeSports(day : str, time : str, desc : str) -> bool:
     connection = sqlite3.connect(PATH)
     cursor = connection.cursor()
-    row = (day, time, type)
+    row = (day, time[:5], desc)
     try:
+        print(desc)
         cursor.execute('DELETE FROM sports WHERE day = ? AND start_time = ? AND type = ?', tuple(row))
         connection.commit()
         connection.close()
