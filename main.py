@@ -1,20 +1,22 @@
 from fastapi import FastAPI, WebSocket, HTTPException
 from pydantic import BaseModel
-from database.db_connections import addAcademic, addGeneral, addSports, getAcademic, getGeneral, getSports, removeAcademic, removeGeneral, removeSports
+from database.db_connections import addAcademic, addGeneral, addSports, getAcademic, getGeneral, getSports, removeAcademic, removeGeneral, removeSports, getCalorie
 
 app = FastAPI()
 
 # Pydantic model (JSON schema)
 class Reminder(BaseModel):
     day: str
-    time: str
-    duration: str
+    start_time: str
+    end_time: str
+    type: str
     desc: str
 
 # Academic Endpoints
 @app.post("/academic/")
 def add_academic(reminder: Reminder):
-    success = addAcademic(reminder.day, reminder.start_time, reminder.end_time, reminder.type, reminder.desc)
+    reminder = reminder.dict()
+    success = addAcademic(reminder['day'], reminder['start_time'], reminder['end_time'], reminder['type'], reminder['desc'])
     if success:
         return {"message": "Academic reminder added successfully"}
     else:
@@ -30,7 +32,7 @@ def get_academic():
 
 @app.delete("/academic/")
 def delete_academic(reminder: Reminder):
-    success = removeAcademic(reminder.day, reminder.time)
+    success = removeAcademic(reminder.day, reminder.start_time, reminder.desc)
     if success:
         return {"message": "Academic reminder deleted successfully"}
     else:
@@ -39,7 +41,7 @@ def delete_academic(reminder: Reminder):
 # General Endpoints
 @app.post("/general/")
 def add_general(reminder: Reminder):
-    success = addGeneral(reminder.day, reminder.time, reminder.duration, reminder.desc)
+    success = addGeneral(reminder.day, reminder.start_time, reminder.end_time, reminder.desc)
     if success:
         return {"message": "General reminder added successfully"}
     else:
@@ -85,3 +87,17 @@ def delete_sports(reminder: Reminder):
         return {"message": "Sports reminder deleted successfully"}
     else:
         raise HTTPException(status_code=400, detail="Failed to delete sports reminder")
+
+@app.get("/calories/")
+def get_calorie():
+    try:
+        calorie = getCalorie()
+        
+        if calorie is None:
+            raise HTTPException(status_code=404, detail="Item or amount not found")
+        
+        return [
+        {"item": item[0], "amount": item[1], "calorie": item[2]} for item in calorie
+    ]
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))

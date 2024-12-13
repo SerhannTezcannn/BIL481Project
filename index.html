@@ -37,13 +37,20 @@
         </div>
         <div id="calorie-intake" class="nested-tab-content">
             <h3>Calorie Intake Calculator</h3>
-            <form id="calorie-form">
-                <input type="text" name="food" placeholder="Yemek" required>
-                <input type="number" name="calories" placeholder="Kalori" required>
-                <button type="submit">Add Calorie</button>
-            </form>
-            <ul id="calorie-list"></ul>
-            <div id="total-calories">Total Calories: 0</div>
+            <!-- Dropdown Seçim Kutusu -->
+            <select id="calorie-dropdown">
+                <option value="" disabled selected>Choose a food item</option>
+                <!-- Dinamik olarak doldurulacak -->
+            </select>
+            <button id="add-calorie-button">Add to List</button>
+        
+            <!-- Listeleme Alanı -->
+            <ul id="calorie-list">
+                <!-- Seçilen öğeler buraya eklenecek -->
+            </ul>
+        
+            <!-- Toplam Kalori Göstergesi -->
+            <div id="total-calories"> </div>
         </div>
         <div id="fitness-progress" class="nested-tab-content">
             <h3>Fitness Progress Tracking</h3>
@@ -70,50 +77,20 @@
     <!-- Academic Tab -->
     <div id="academic" class="tab-content">
         <h2>Academic Reminders</h2>
-        <div id="academic-tabs">
-            <button onclick="showNestedTab('quiz-exam')">Quizzes & Exams</button>
-            <button onclick="showNestedTab('study-session')">Study Sessions</button>
-            <button onclick="showNestedTab('assignments')">Assignments</button>
-        </div>
-        <div id="quiz-exam" class="nested-tab-content">
-            <h3>Quiz & Exam Schedule</h3>
-            <form id="quiz-exam-form">
-                <input type="date" name="date" required>
-                <input type="time" name="start-time" placeholder="Start Time" required>
-                <input type="time" name="end-time" placeholder="End Time" required>
-                <input type="text" name="subject" placeholder="Subject" required>
-                <select id="type" name="type">
-        <option value="quiz">Quiz</option>
-        <option value="exam">Exam</option>
-    </select>
-    <button type="submit">Add Reminder</button>
-            </form>
-            <ul id="quiz-exam-list"></ul>
-        </div>
-        <div id="study-session" class="nested-tab-content">
-            <h3>Daily Study Session Reminders</h3>
-            <form id="study-session-form">
-                <input type="date" name="date" required>
-                <input type="time" name="start-time" placeholder="Start Time" required>
-                <input type="time" name="end-time" placeholder="End Time" required>
-                <input type="text" name="subject" placeholder="Subject" required>
-
-                <button type="submit">Add Reminder</button>
-            </form>
-            <ul id="study-session-list"></ul>
-        </div>
-        <div id="assignments" class="nested-tab-content">
-            <h3>Assignment Reminders</h3>
-            <form id="assignment-form">
-                <input type="date" name="due-date" required>
-                <input type="text" name="title" placeholder="Assignment Title" required>
-                <textarea name="details" placeholder="Assignment Details" required></textarea>
-                <button type="submit">Add Reminder</button>
-            </form>
-            <ul id="assignment-list"></ul>
-        </div>
+        <form id="academic-form">
+            <input type="date" name="date" required>
+            <input type="time" name="start_time" required>
+            <input type="time" name="end_time" required>
+            <textarea name="desc" placeholder="Enter reminder note" required></textarea>
+            <select id="type" name="type">
+                <option value="quiz">Quiz</option>
+                <option value="exam">Exam</option>
+                <option value="study">Study Session</option>
+            </select>
+            <button type="submit">Add Reminder</button>
+        </form>
+        <ul id="academic-list"></ul>  
     </div>
-
 
     <!-- General Tab -->
     <div id="general" class="tab-content">
